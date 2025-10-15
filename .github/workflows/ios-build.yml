@@ -6,7 +6,7 @@ on:
       flutter_version:
         description: "Flutter version"
         required: false
-        default: "3.24.1"
+        default: "3.24.3"
       build_flavor:
         description: "Flutter flavor (optional)"
         required: false
