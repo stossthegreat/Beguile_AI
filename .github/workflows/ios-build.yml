@@ -31,18 +31,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Remove old Flutter cache
+        run: rm -rf $HOME/.flutter_cache
+
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
 
-      - name: Install Flutter
+      - name: Install Flutter (latest stable 3.24.3)
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: ${{ env.FLUTTER_VERSION }}
+          flutter-version: "3.24.3"
           channel: stable
-          cache: true
+          cache: false    # 👈 disables reuse of older cached SDKs
 
       - name: Flutter doctor
         run: flutter doctor -v
