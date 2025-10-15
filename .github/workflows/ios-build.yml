@@ -14,7 +14,7 @@ on:
       build_number:
         description: "iOS build number"
         required: false
-        default: "1"   # 👈 static default now, will be replaced dynamically later
+        default: "1"
 
 jobs:
   build-ios:
@@ -23,12 +23,12 @@ jobs:
 
     env:
       FLUTTER_VERSION: ${{ inputs.flutter_version }}
-      BUILD_NUMBER: ${{ inputs.build_number || github.run_number }}
+      BUILD_NUMBER: ${{ github.run_number }}
       FLAVOR: ${{ inputs.build_flavor }}
       ENABLE_CODE_SIGN: "false"
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up Java
@@ -50,7 +50,7 @@ jobs:
       - name: Precache iOS artifacts
         run: flutter precache --ios
 
-      - name: Get dependencies
+      - name: Get Flutter dependencies
         run: flutter pub get
 
       - name: Install CocoaPods
