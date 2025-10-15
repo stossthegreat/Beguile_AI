@@ -14,24 +14,24 @@ on:
       build_number:
         description: "iOS build number"
         required: false
-        default: "${{ github.run_number }}"
+        default: "1"   # 👈 static default now, will be replaced dynamically later
 
 jobs:
   build-ios:
-    runs-on: macos-14  # Apple Silicon macOS runner
+    runs-on: macos-14
     timeout-minutes: 60
+
     env:
       FLUTTER_VERSION: ${{ inputs.flutter_version }}
-      BUILD_NUMBER: ${{ inputs.build_number }}
+      BUILD_NUMBER: ${{ inputs.build_number || github.run_number }}
       FLAVOR: ${{ inputs.build_flavor }}
-      # Set to "true" later if you add signing secrets (see notes below)
       ENABLE_CODE_SIGN: "false"
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Java (for Flutter tooling)
+      - name: Set up Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -41,7 +41,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
-          channel: "stable"
+          channel: stable
           cache: true
 
       - name: Flutter doctor
@@ -50,37 +50,22 @@ jobs:
       - name: Precache iOS artifacts
         run: flutter precache --ios
 
-      - name: Get pub deps
+      - name: Get dependencies
         run: flutter pub get
 
-      - name: Pod setup (CocoaPods)
+      - name: Install CocoaPods
         run: |
           cd ios
           pod repo update
           pod install
-        shell: bash
 
-      # ---------- BUILD (UNSIGNED) ----------
-      - name: Build iOS (unsigned xcarchive via Flutter)
+      - name: Build iOS (unsigned)
         run: |
           if [ -n "${{ env.FLAVOR }}" ]; then
             flutter build ipa --no-codesign --flavor "${{ env.FLAVOR }}" --build-number "${{ env.BUILD_NUMBER }}"
           else
             flutter build ipa --no-codesign --build-number "${{ env.BUILD_NUMBER }}"
           fi
-        shell: bash
-
-      # Useful outputs to fetch:
-      # - build/ios/archive/*.xcarchive  (Xcode archive)
-      # - build/ios/iphoneos/Runner.app  (app bundle)
-      # - build/ios/ipa/*.ipa            (only if later signed; ignored if missing)
-
-      - name: Upload .xcarchive
-        uses: actions/upload-artifact@v4
-        with:
-          name: ios-xcarchive
-          path: build/ios/archive/*.xcarchive
-          if-no-files-found: warn
 
       - name: Upload Runner.app
         uses: actions/upload-artifact@v4
@@ -89,17 +74,9 @@ jobs:
           path: build/ios/iphoneos/Runner.app
           if-no-files-found: warn
 
-      - name: Upload .ipa (may not exist for unsigned builds)
+      - name: Upload xcarchive
         uses: actions/upload-artifact@v4
         with:
-          name: ios-ipa
-          path: build/ios/ipa/*.ipa
-          if-no-files-found: ignore
-
-      - name: Upload DerivedData logs (optional)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: xcode-deriveddata-logs
-          path: ~/Library/Developer/Xcode/DerivedData/**/Logs/**
-          if-no-files-found: ignore
+          name: ios-xcarchive
+          path: build/ios/archive/*.xcarchive
+          if-no-files-found: warn
