@@ -45,4 +45,75 @@ class WFShadows {
       offset: Offset(0, 1),
     ),
   ];
+
+  // Soft white glow for glass cards
+  static const List<BoxShadow> softWhiteGlow = [
+    BoxShadow(
+      color: Color(0x33FFFFFF), // white at 20% opacity
+      blurRadius: 60,
+      spreadRadius: -10,
+      offset: Offset(0, 0),
+    ),
+  ];
+
+  // Magenta button glow
+  static const List<BoxShadow> magentaGlow = [
+    BoxShadow(
+      color: Color(0x80FF00FF), // magenta at 50% opacity
+      blurRadius: 25,
+      spreadRadius: -5,
+      offset: Offset(0, 0),
+    ),
+  ];
+
+  // Fuchsia card glow (for selected plan cards)
+  static const List<BoxShadow> fuchsiaGlow = [
+    BoxShadow(
+      color: Color(0x66E879F9), // fuchsia at 40% opacity
+      blurRadius: 20,
+      offset: Offset(0, 8),
+    ),
+  ];
+
+  // Emerald card glow (for yearly plan)
+  static const List<BoxShadow> emeraldGlow = [
+    BoxShadow(
+      color: Color(0x6634D399), // emerald at 40% opacity
+      blurRadius: 20,
+      offset: Offset(0, 8),
+    ),
+  ];
+
+  // White glow for CTA buttons
+  static const List<BoxShadow> whiteGlow = [
+    BoxShadow(
+      color: Color(0x4DFFFFFF), // white at 30% opacity
+      blurRadius: 25,
+      spreadRadius: -5,
+      offset: Offset(0, 0),
+    ),
+  ];
+
+  // Mentor portrait glow (parameterized in code)
+  static List<BoxShadow> mentorGlow(Color color) => [
+    BoxShadow(
+      color: color.withOpacity(0.4),
+      blurRadius: 80,
+      spreadRadius: 20,
+    ),
+    BoxShadow(
+      color: color.withOpacity(0.2),
+      blurRadius: 120,
+      spreadRadius: 40,
+    ),
+  ];
+
+  // Council portrait subtle glow
+  static List<BoxShadow> councilPortraitGlow(Color color) => [
+    BoxShadow(
+      color: color.withOpacity(0.2),
+      blurRadius: 40,
+      spreadRadius: 5,
+    ),
+  ];
 }

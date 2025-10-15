@@ -94,6 +94,7 @@ flutter:
     - assets/images/onboarding/
     - assets/images/categories/
     - assets/legal/
+    - .env
     
 
 

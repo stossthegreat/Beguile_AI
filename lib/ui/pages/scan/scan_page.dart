@@ -970,11 +970,12 @@ class _ScanPageState extends ConsumerState<ScanPage> {
               )),
               const SizedBox(height: 16),
               const Text(
-                'Beguile AI • Mars Edition',
+                'Beguile AI',
                 style: TextStyle(
-                  fontSize: 10,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
                   letterSpacing: 2.0,
-                  color: WFColors.textTertiary,
+                  color: WFColors.purple400,
                 ),
               ),
             ],

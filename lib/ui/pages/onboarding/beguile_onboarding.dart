@@ -1,24 +1,123 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/theme.dart';
 
-/* ─────────────────────── IMAGE CONSTANTS ─────────────────────── */
-const List<String> _dojoCategoryImages = [
-  'assets/images/categories/conversation_frames.jpg',
-  'assets/images/categories/emotional_alchemy.png',
-  'assets/images/categories/hidden_dynamics.jpg',
-  'assets/images/categories/magnetic_presence.jpg',
-  'assets/images/categories/psychological_gravity.png',
-  'assets/images/categories/scarcity_desire.jpg',
+/* ─────────────────────── SLIDE DATA ─────────────────────── */
+class OnboardingSlide {
+  final String title;
+  final String subtitle;
+  final String text;
+  final String cta;
+  final LinearGradient gradient;
+
+  const OnboardingSlide({
+    required this.title,
+    required this.subtitle,
+    required this.text,
+    required this.cta,
+    required this.gradient,
+  });
+}
+
+final List<OnboardingSlide> _slides = [
+  OnboardingSlide(
+    title: 'Beguile AI',
+    subtitle: 'The Art of Influence',
+    text: 'Every word you send shapes perception. Most people text — you will command.',
+    cta: 'Enter the Chamber',
+    gradient: WFGradients.onboardingSlide1,
+  ),
+  OnboardingSlide(
+    title: 'This is not a chat app. It\'s a weapon.',
+    subtitle: 'Psychological Warfare',
+    text: 'Learn the persuasion frameworks of legends — the patterns that built empires and broke hearts.',
+    cta: 'Meet the Masters',
+    gradient: WFGradients.onboardingSlide2,
+  ),
+  OnboardingSlide(
+    title: 'The Six Mentors',
+    subtitle: 'Legends Reforged',
+    text: '⚔️ Sun Tzu — The strategist.\n👑 Machiavelli — The political predator.\n💋 Casanova — The seducer.\n⎈ Aurelius — The stoic ruler.\n💎 Cleopatra — The magnetic queen.\n🌹 Monroe — The softness that conquers.',
+    cta: 'Witness the Debate',
+    gradient: WFGradients.onboardingSlide3,
+  ),
+  OnboardingSlide(
+    title: 'When legends clash, wisdom ignites.',
+    subtitle: 'Council Mode',
+    text: 'Watch mentors argue in real-time to craft the perfect response — merging charisma, precision, and power.',
+    cta: 'See Your Power',
+    gradient: WFGradients.onboardingSlide4,
+  ),
+  OnboardingSlide(
+    title: 'Every message hides a secret.',
+    subtitle: 'Psy-Ops Scan',
+    text: 'Paste any conversation. Our AI X-Ray exposes hidden motives — manipulation, frame control, or weakness.',
+    cta: 'Unlock Your Analysis',
+    gradient: WFGradients.onboardingSlide5,
+  ),
+  OnboardingSlide(
+    title: 'Seduce. Persuade. Dominate.',
+    subtitle: 'Your Mind — Upgraded',
+    text: 'Beguile AI is your mentor, analyst, and mirror. From dating to strategy — become the most dangerous version of you.',
+    cta: 'Begin Training',
+    gradient: WFGradients.onboardingSlide6,
+  ),
 ];
 
-const List<String> _mentorImages = [
-  'assets/images/mentors/casanova.png',
-  'assets/images/mentors/churchill.png',
-  'assets/images/mentors/cleopatra.png',
-  'assets/images/mentors/machiavelli.png',
-  'assets/images/mentors/marcus_aurelius.png',
-  'assets/images/mentors/sun_tzu.png',
+/* ─────────────────────── MENTOR DATA ─────────────────────── */
+class MentorData {
+  final String name;
+  final String asset;
+  final Color themeColor;
+  final String quote;
+
+  const MentorData({
+    required this.name,
+    required this.asset,
+    required this.themeColor,
+    required this.quote,
+  });
+}
+
+final List<MentorData> _mentors = [
+  MentorData(
+    name: 'Sun Tzu',
+    asset: 'assets/images/mentors/sun_tzu.png',
+    themeColor: WFColors.mentorSunTzu,
+    quote: 'Appear weak when you are strong, and strong when you are weak.',
+  ),
+  MentorData(
+    name: 'Machiavelli',
+    asset: 'assets/images/mentors/machiavelli.png',
+    themeColor: WFColors.mentorMachiavelli,
+    quote: 'Never attempt to win by force what can be won by deception.',
+  ),
+  MentorData(
+    name: 'Casanova',
+    asset: 'assets/images/mentors/casanova.png',
+    themeColor: WFColors.mentorCasanova,
+    quote: 'Love is three-quarters curiosity.',
+  ),
+  MentorData(
+    name: 'Marcus Aurelius',
+    asset: 'assets/images/mentors/marcus_aurelius.png',
+    themeColor: WFColors.mentorAurelius,
+    quote: 'You have power over your mind — not outside events.',
+  ),
+  MentorData(
+    name: 'Cleopatra',
+    asset: 'assets/images/mentors/cleopatra.png',
+    themeColor: WFColors.mentorCleopatra,
+    quote: 'I will not be triumphed over.',
+  ),
+  MentorData(
+    name: 'Marilyn Monroe',
+    asset: 'assets/images/mentors/monroe.png',
+    themeColor: WFColors.mentorMonroe,
+    quote: 'A smart girl knows her limits; a wise girl knows she has none.',
+  ),
 ];
 
 /* ─────────────────────── MAIN ONBOARDING ─────────────────────── */
@@ -34,6 +133,601 @@ class _BeguileOnboardingState extends ConsumerState<BeguileOnboarding>
     with TickerProviderStateMixin {
   final _controller = PageController();
   int _page = 0;
+  bool _isExploding = false;
+  bool _showCouncilReveal = false;
+
+  bool _imagesPrecached = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_imagesPrecached) {
+      _precacheMentorImages();
+      _imagesPrecached = true;
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _precacheMentorImages() {
+    for (final mentor in _mentors) {
+      precacheImage(AssetImage(mentor.asset), context);
+    }
+  }
+
+  void _onLastSlideContinue() {
+    setState(() => _isExploding = true);
+    Future.delayed(const Duration(milliseconds: 2200), () {
+      if (mounted) {
+        setState(() {
+          _isExploding = false;
+          _showCouncilReveal = true;
+        });
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            // Main onboarding slides
+            if (!_isExploding && !_showCouncilReveal) _buildMainContent(),
+            // Explode animation
+            if (_isExploding) _buildExplodeOverlay(),
+            // Council reveal sequence
+            if (_showCouncilReveal) _CouncilRevealSequence(
+              onComplete: widget.onFinish,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMainContent() {
+    return Stack(
+      children: [
+        // PageView with slides
+        PageView.builder(
+          controller: _controller,
+          itemCount: _slides.length,
+          onPageChanged: (i) => setState(() => _page = i),
+          itemBuilder: (context, index) {
+            final slide = _slides[index];
+            final isLastSlide = index == _slides.length - 1;
+            
+            return AnimatedContainer(
+              duration: const Duration(milliseconds: 600),
+              decoration: BoxDecoration(gradient: slide.gradient),
+              child: Stack(
+                children: [
+                  // Background blobs
+                  _buildBackgroundBlobs(),
+                  // Main content
+                  Center(
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 40),
+                        child: _buildGlassCard(slide, isLastSlide, index),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+        // Bottom UI (page dots)
+        Positioned(
+          bottom: 24,
+          left: 24,
+          right: 24,
+          child: IgnorePointer(
+            child: Row(
+              children: [
+                _PageDots(count: _slides.length, index: _page),
+                const Spacer(),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBackgroundBlobs() {
+    final size = MediaQuery.of(context).size;
+    return Positioned.fill(
+      child: IgnorePointer(
+        child: Opacity(
+          opacity: 0.2,
+          child: Stack(
+            children: [
+              Positioned(
+                top: size.height * 0.25,
+                left: size.width * 0.25,
+                child: _AnimatedBlob(color: WFColors.emerald300, size: 256),
+              ),
+              Positioned(
+                bottom: size.height * 0.25,
+                right: size.width * 0.25,
+                child: _AnimatedBlob(color: WFColors.fuchsia500, size: 288),
+              ),
+              Positioned(
+                bottom: 40,
+                left: 40,
+                child: _AnimatedBlob(color: WFColors.purple500, size: 240),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGlassCard(OnboardingSlide slide, bool isLastSlide, int index) {
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 672),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.05),
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.1),
+                width: 1,
+              ),
+              boxShadow: WFShadows.softWhiteGlow,
+            ),
+            padding: const EdgeInsets.all(40),
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+            children: [
+                // Title with gradient
+                ShaderMask(
+                  shaderCallback: (bounds) => WFGradients.titleGradient.createShader(bounds),
+                  child: Text(
+                    slide.title,
+                    style: GoogleFonts.spaceGrotesk(
+                      fontSize: 48,
+                    fontWeight: FontWeight.w900,
+                      color: Colors.white,
+                      height: 1.2,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                // Subtitle
+                Text(
+                  slide.subtitle.toUpperCase(),
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    letterSpacing: 4.0,
+                    color: Colors.white.withOpacity(0.6),
+                    fontWeight: FontWeight.w600,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 32),
+                // Body text
+              Text(
+                  slide.text,
+                  style: GoogleFonts.inter(
+                    fontSize: 18,
+                    color: Colors.white.withOpacity(0.8),
+                  height: 1.6,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 32),
+                // CTA button
+                _CTAButton(
+                  label: slide.cta,
+                  onTap: () {
+                    if (isLastSlide) {
+                      _onLastSlideContinue();
+                    } else {
+                      _controller.animateToPage(
+                        index + 1,
+                        duration: const Duration(milliseconds: 400),
+                        curve: Curves.easeOutCubic,
+                      );
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildExplodeOverlay() {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0.0, end: 1.0),
+      duration: const Duration(milliseconds: 2200),
+      curve: Curves.easeInOut,
+      builder: (context, progress, child) {
+        // Opacity: 0 → 1 → 0.9 → 0
+        double opacity;
+        if (progress < 0.3) {
+          opacity = progress / 0.3;
+        } else if (progress < 0.7) {
+          opacity = 1.0;
+        } else if (progress < 0.9) {
+          opacity = 0.9;
+        } else {
+          opacity = (1.0 - progress) * 9;
+        }
+
+        // Scale: 0 → 1.5 → 2
+        double scale;
+        if (progress < 0.5) {
+          scale = progress * 3; // 0 to 1.5
+        } else {
+          scale = 1.5 + (progress - 0.5) * 1.0; // 1.5 to 2
+        }
+
+        // Text opacity: 0 → 1 → 0
+        double textOpacity;
+        if (progress < 0.3) {
+          textOpacity = progress / 0.3;
+        } else if (progress < 0.7) {
+          textOpacity = 1.0;
+        } else {
+          textOpacity = (1.0 - progress) / 0.3;
+        }
+
+        return Opacity(
+          opacity: opacity,
+          child: Container(
+            decoration: const BoxDecoration(
+              gradient: WFGradients.explodeGradient,
+            ),
+            child: Center(
+              child: Transform.scale(
+                scale: scale,
+                child: Opacity(
+                  opacity: textOpacity.clamp(0.0, 1.0),
+                  child: Text(
+                    'BEGUILE AI',
+                    style: GoogleFonts.spaceGrotesk(
+                      fontSize: 80,
+                    fontWeight: FontWeight.w900,
+                      color: Colors.white,
+                      shadows: const [
+                        Shadow(
+                          blurRadius: 40,
+                          color: Colors.black54,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+/* ───────────────────────── COUNCIL REVEAL ───────────────────────── */
+class _CouncilRevealSequence extends StatefulWidget {
+  final VoidCallback onComplete;
+
+  const _CouncilRevealSequence({required this.onComplete});
+
+  @override
+  State<_CouncilRevealSequence> createState() => _CouncilRevealSequenceState();
+}
+
+class _CouncilRevealSequenceState extends State<_CouncilRevealSequence>
+    with TickerProviderStateMixin {
+  int _currentMentorIndex = -1;
+  bool _showCouncilGroup = false;
+  bool _showTypewriter = false;
+  bool _showTagline = false;
+  bool _showContinueButton = false;
+  late AnimationController _mentorAnimController;
+
+  @override
+  void initState() {
+    super.initState();
+    _mentorAnimController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2000),
+    );
+    _startSequence();
+  }
+
+  @override
+  void dispose() {
+    _mentorAnimController.dispose();
+    super.dispose();
+  }
+
+  void _startSequence() async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    
+    // Show mentors one by one
+    for (int i = 0; i < _mentors.length; i++) {
+      if (!mounted) return;
+      setState(() => _currentMentorIndex = i);
+      _mentorAnimController.reset();
+      _mentorAnimController.forward();
+      await Future.delayed(const Duration(milliseconds: 5500));
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      _currentMentorIndex = -1;
+      _showCouncilGroup = true;
+    });
+    await Future.delayed(const Duration(milliseconds: 2000));
+
+    if (!mounted) return;
+    setState(() => _showTypewriter = true);
+    await Future.delayed(const Duration(milliseconds: 2000));
+
+    if (!mounted) return;
+    setState(() => _showTagline = true);
+    await Future.delayed(const Duration(milliseconds: 2000));
+
+    if (!mounted) return;
+    setState(() => _showContinueButton = true);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: WFGradients.councilBackground,
+      ),
+      child: Stack(
+            children: [
+          // Individual mentor reveal
+          if (_currentMentorIndex >= 0)
+            _buildMentorReveal(_mentors[_currentMentorIndex]),
+          // Council group
+          if (_showCouncilGroup) _buildCouncilGroup(),
+          // Continue button
+          if (_showContinueButton)
+            Positioned(
+              bottom: 40,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: _CTAButton(
+                  label: 'Continue',
+                  onTap: widget.onComplete,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMentorReveal(MentorData mentor) {
+    return AnimatedBuilder(
+      animation: _mentorAnimController,
+      builder: (context, child) {
+        final progress = _mentorAnimController.value;
+        // Fade in then out
+        double opacity;
+        if (progress < 0.15) {
+          opacity = progress / 0.15;
+        } else if (progress < 0.75) {
+          opacity = 1.0;
+        } else {
+          opacity = (1.0 - progress) / 0.25;
+        }
+
+        return Opacity(
+          opacity: opacity.clamp(0.0, 1.0),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Portrait with glow
+                Container(
+                  width: 200,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: WFShadows.mentorGlow(mentor.themeColor),
+                  ),
+                  child: ClipOval(
+                    child: Image.asset(mentor.asset, fit: BoxFit.cover),
+                  ),
+                ),
+                const SizedBox(height: 48),
+                // Quote
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+          child: Column(
+            children: [
+              Text(
+                        mentor.quote,
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.playfairDisplay(
+                          fontSize: 18,
+                          fontStyle: FontStyle.italic,
+                          color: Colors.white.withOpacity(0.9),
+                  height: 1.6,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        '— ${mentor.name}',
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: mentor.themeColor,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildCouncilGroup() {
+    return AnimatedScale(
+      scale: _showCouncilGroup ? 1.0 : 0.8,
+      duration: const Duration(milliseconds: 2000),
+      curve: Curves.easeOutCubic,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Portrait grid
+            Column(
+              children: [
+                // Top row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildCouncilPortrait(_mentors[0]),
+                    const SizedBox(width: 16),
+                    _buildCouncilPortrait(_mentors[1]),
+                    const SizedBox(width: 16),
+                    _buildCouncilPortrait(_mentors[2]),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                // Bottom row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildCouncilPortrait(_mentors[3]),
+                    const SizedBox(width: 16),
+                    _buildCouncilPortrait(_mentors[4]),
+                    const SizedBox(width: 16),
+                    _buildCouncilPortrait(_mentors[5]),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 48),
+            // "THE COUNCIL" text
+            if (_showTypewriter)
+              TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0.0, end: 1.0),
+                duration: const Duration(milliseconds: 2000),
+                builder: (context, progress, child) {
+                  const fullText = 'THE COUNCIL';
+                  final visibleLength = (fullText.length * progress).round();
+                  final visibleText = fullText.substring(0, visibleLength);
+
+                  return ShaderMask(
+                    shaderCallback: (bounds) => WFGradients.councilTextGradient.createShader(bounds),
+                    child: Text(
+                      visibleText,
+                      style: GoogleFonts.spaceGrotesk(
+                        fontSize: 48,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white,
+                        letterSpacing: 4.0,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            const SizedBox(height: 16),
+            // Tagline
+            if (_showTagline)
+              TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0.0, end: 1.0),
+                duration: const Duration(milliseconds: 2000),
+                builder: (context, opacity, child) {
+                  return Opacity(
+                    opacity: opacity,
+                    child: Text(
+                      'Where power, charm, and wisdom converge',
+                      style: GoogleFonts.inter(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white.withOpacity(0.7),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                },
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCouncilPortrait(MentorData mentor) {
+    return Container(
+      width: 100,
+      height: 100,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        boxShadow: WFShadows.councilPortraitGlow(mentor.themeColor),
+      ),
+      child: ClipOval(
+        child: Image.asset(mentor.asset, fit: BoxFit.cover),
+      ),
+    );
+  }
+}
+
+/* ───────────────────────── HELPER WIDGETS ───────────────────────── */
+
+class _AnimatedBlob extends StatefulWidget {
+  final Color color;
+  final double size;
+
+  const _AnimatedBlob({required this.color, required this.size});
+
+  @override
+  State<_AnimatedBlob> createState() => _AnimatedBlobState();
+}
+
+class _AnimatedBlobState extends State<_AnimatedBlob>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    )..repeat(reverse: true);
+  }
 
   @override
   void dispose() {
@@ -43,522 +737,72 @@ class _BeguileOnboardingState extends ConsumerState<BeguileOnboarding>
 
   @override
   Widget build(BuildContext context) {
-    final pages = <Widget>[
-      const _WelcomeSlide(),
-      const _LessonsSlide(),
-      const _MentorsSlide(),
-      const _AnalyzeSlide(),
-      const _PowerSlide(),
-      _FinishSlide(onContinue: widget.onFinish),
-    ];
-
-    return Scaffold(
-      backgroundColor: WFColors.base,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            PageView.builder(
-              controller: _controller,
-              itemCount: pages.length,
-              onPageChanged: (i) => setState(() => _page = i),
-              itemBuilder: (_, i) => pages[i],
-            ),
-            Positioned(
-              bottom: 24,
-              left: 24,
-              right: 24,
-              child: IgnorePointer(
-                ignoring: true,
-                child: Row(
-                  children: [
-                    _PageDots(count: pages.length, index: _page),
-                    const Spacer(),
-                    _BrandedFooter(),
-                    const SizedBox(width: 8),
-                  ],
-                ),
-              ),
-            ),
-            if (_page < pages.length - 1)
-              Positioned(
-                right: 16,
-                bottom: 88,
-                child: _GhostButton(
-                  label: 'Next',
-                  onTap: () => _controller.nextPage(
-                    duration: const Duration(milliseconds: 400),
-                    curve: Curves.easeOutCubic,
-                  ),
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/* ───────────────────────── SLIDES ───────────────────────── */
-
-class _WelcomeSlide extends StatelessWidget {
-  const _WelcomeSlide();
-
-  @override
-  Widget build(BuildContext context) {
-    final h = MediaQuery.of(context).size.height;
-    final w = MediaQuery.of(context).size.width;
-
-    return SingleChildScrollView(
-      child: ConstrainedBox(
-        constraints: BoxConstraints(minHeight: h * 0.8),
-        child: Padding(
-          padding: EdgeInsets.all(w * 0.05),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: h * 0.05),
-              Text('Welcome to',
-                  style: WFTextStyles.h2.copyWith(
-                    color: WFColors.gray400,
-                    fontWeight: FontWeight.w600,
-                    fontSize: w * 0.045,
-                  )),
-              SizedBox(height: h * 0.01),
-              ShaderMask(
-                shaderCallback: (b) =>
-                    WFGradients.purpleGradient.createShader(b),
-                child: Text('BEGUILE AI',
-                    style: WFTextStyles.h1.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 2.0,
-                      fontSize: w * 0.08,
-                    )),
-              ),
-              SizedBox(height: h * 0.02),
-              Text('Where desire becomes strategy.',
-                  style: WFTextStyles.h3.copyWith(
-                    color: WFColors.purple400,
-                    fontWeight: FontWeight.w700,
-                    fontSize: w * 0.04,
-                  )),
-              SizedBox(height: h * 0.04),
-              Text(
-                "You've been chosen to step into the circle. Learn to hold the frame, ignite tension, and speak in lines that live rent-free in their minds forever.",
-                style: WFTextStyles.bodyLarge.copyWith(
-                  color: WFColors.gray300,
-                  height: 1.6,
-                  fontWeight: FontWeight.w500,
-                  fontSize: w * 0.035,
-                ),
-              ),
-              SizedBox(height: h * 0.03),
-              Container(
-                padding: EdgeInsets.all(w * 0.04),
-                decoration: BoxDecoration(
-                  color: Colors.amber.withOpacity(0.1),
-                  border: Border.all(color: Colors.amber.withOpacity(0.3)),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(children: [
-                  Icon(Icons.warning_amber_rounded,
-                      color: Colors.amber, size: w * 0.06),
-                  SizedBox(width: w * 0.03),
-                  Expanded(
-                    child: Text(
-                      'Master the art of communication through advanced social psychology and strategic thinking.',
-                      style: TextStyle(
-                        color: Colors.amber[200],
-                        fontSize: w * 0.03,
-                      ),
-                    ),
-                  ),
-                ]),
-              ),
-              SizedBox(height: h * 0.05),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _LessonsSlide extends StatelessWidget {
-  const _LessonsSlide();
-
-  @override
-  Widget build(BuildContext context) {
-    final h = MediaQuery.of(context).size.height;
-    final w = MediaQuery.of(context).size.width;
-    return SingleChildScrollView(
-      child: ConstrainedBox(
-        constraints: BoxConstraints(minHeight: h * 0.8),
-        child: Padding(
-          padding: EdgeInsets.all(w * 0.05),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: h * 0.05),
-              Text('THE DOJO',
-                  style: WFTextStyles.h1.copyWith(
-                    color: WFColors.purple400,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 2.0,
-                    fontSize: w * 0.08,
-                  )),
-              SizedBox(height: h * 0.01),
-              Text('Where legends are forged',
-                  style: WFTextStyles.h3.copyWith(
-                    color: WFColors.gray400,
-                    fontWeight: FontWeight.w600,
-                    fontSize: w * 0.04,
-                  )),
-              SizedBox(height: h * 0.04),
-              const _ImageGrid(assetPaths: _dojoCategoryImages),
-              SizedBox(height: h * 0.03),
-              Text(
-                "Behind these doors lie 120+ lessons across 6 legendary categories. Each world unlocks new levels of mastery. You start as a student. You'll leave as a master.",
-                style: WFTextStyles.bodyLarge.copyWith(
-                  color: WFColors.gray300,
-                  height: 1.6,
-                  fontWeight: FontWeight.w500,
-                  fontSize: w * 0.035,
-                ),
-              ),
-              SizedBox(height: h * 0.05),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _MentorsSlide extends StatelessWidget {
-  const _MentorsSlide();
-
-  @override
-  Widget build(BuildContext context) {
-    final h = MediaQuery.of(context).size.height;
-    final w = MediaQuery.of(context).size.width;
-    return SingleChildScrollView(
-      child: ConstrainedBox(
-        constraints: BoxConstraints(minHeight: h * 0.8),
-        child: Padding(
-          padding: EdgeInsets.all(w * 0.05),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: h * 0.05),
-              Text('THE COUNCIL',
-                  style: WFTextStyles.h1.copyWith(
-                    color: WFColors.purple400,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 2.0,
-                    fontSize: w * 0.08,
-                  )),
-              SizedBox(height: h * 0.01),
-              Text('Ancient wisdom at your fingertips',
-                  style: WFTextStyles.h3.copyWith(
-                    color: WFColors.gray400,
-                    fontWeight: FontWeight.w600,
-                    fontSize: w * 0.04,
-                  )),
-              SizedBox(height: h * 0.04),
-              const _ImageGrid(assetPaths: _mentorImages),
-              SizedBox(height: h * 0.03),
-              Text(
-                "Six legendary mentors await your questions. Casanova teaches charm defense. Cleopatra reveals power plays. Machiavelli exposes cunning. Each AI mentor is a master of their domain.",
-                style: WFTextStyles.bodyLarge.copyWith(
-                  color: WFColors.gray300,
-                  height: 1.6,
-                  fontWeight: FontWeight.w500,
-                  fontSize: w * 0.035,
-                ),
-              ),
-              SizedBox(height: h * 0.05),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _AnalyzeSlide extends StatelessWidget {
-  const _AnalyzeSlide();
-
-  @override
-  Widget build(BuildContext context) {
-    final h = MediaQuery.of(context).size.height;
-    final w = MediaQuery.of(context).size.width;
-    return SingleChildScrollView(
-      child: ConstrainedBox(
-        constraints: BoxConstraints(minHeight: h * 0.8),
-        child: Padding(
-          padding: EdgeInsets.all(w * 0.05),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: h * 0.05),
-              Text('THE SCANNER',
-                  style: WFTextStyles.h1.copyWith(
-                    color: WFColors.purple400,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 2.0,
-                    fontSize: w * 0.08,
-                  )),
-              SizedBox(height: h * 0.01),
-              Text('See through every facade',
-                  style: WFTextStyles.h3.copyWith(
-                    color: WFColors.gray400,
-                    fontWeight: FontWeight.w600,
-                    fontSize: w * 0.04,
-                  )),
-              SizedBox(height: h * 0.04),
-              Text(
-                "Upload a single message or an entire chat thread — and our AI reveals the hidden psychology behind every line.",
-                style: WFTextStyles.bodyLarge.copyWith(
-                  color: WFColors.gray300,
-                  height: 1.6,
-                  fontWeight: FontWeight.w500,
-                  fontSize: w * 0.035,
-                ),
-              ),
-              SizedBox(height: h * 0.03),
-              const _Bullet("🎭 Reveals the real tone — charm, control, sincerity, or manipulation."),
-              const _Bullet("⚖️ Maps the power balance — who’s leading, who’s chasing."),
-              const _Bullet("💔 Exposes emotional tactics — how they try to make you feel."),
-              const _Bullet("🔥 Crafts your upgraded reply — seductive, assertive, or calm power."),
-              SizedBox(height: h * 0.05),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _PowerSlide extends StatelessWidget {
-  const _PowerSlide();
-
-  @override
-  Widget build(BuildContext context) {
-    final h = MediaQuery.of(context).size.height;
-    final w = MediaQuery.of(context).size.width;
-    return SingleChildScrollView(
-      child: ConstrainedBox(
-        constraints: BoxConstraints(minHeight: h * 0.8),
-        child: Padding(
-          padding: EdgeInsets.all(w * 0.05),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: h * 0.05),
-              Text('THE POWER',
-                  style: WFTextStyles.h1.copyWith(
-                    color: WFColors.purple400,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 2.0,
-                    fontSize: w * 0.08,
-                  )),
-              SizedBox(height: h * 0.01),
-              Text('Knowledge is your weapon',
-                  style: WFTextStyles.h3.copyWith(
-                    color: WFColors.gray400,
-                    fontWeight: FontWeight.w600,
-                    fontSize: w * 0.04,
-                  )),
-              SizedBox(height: h * 0.04),
-              Text(
-                "This knowledge is dangerous. It gives you the power to see through manipulation, control social dynamics, and command respect. Use it wisely. Use it well.",
-                style: WFTextStyles.bodyLarge.copyWith(
-                  color: WFColors.gray300,
-                  height: 1.6,
-                  fontWeight: FontWeight.w500,
-                  fontSize: w * 0.035,
-                ),
-              ),
-              SizedBox(height: h * 0.05),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}/* ───────────────────────── FINISH SLIDE ───────────────────────── */
-
-class _FinishSlide extends StatelessWidget {
-  final VoidCallback onContinue;
-  const _FinishSlide({required this.onContinue});
-
-  @override
-  Widget build(BuildContext context) {
-    return _CinemaFrame(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Spacer(),
-          Text("YOU'RE READY",
-              style: WFTextStyles.h1.copyWith(
-                color: WFColors.purple400,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 2.0,
-              )),
-          const SizedBox(height: 12),
-          Text("Let's set up your account and continue.",
-              style: WFTextStyles.h3.copyWith(
-                color: WFColors.gray400,
-                fontWeight: FontWeight.w600,
-              )),
-          const SizedBox(height: 32),
-          _CTAButton(
-            label: 'Continue',
-            enabled: true,
-            onTap: onContinue,
-            primary: true,
-          ),
-          const Spacer(),
-        ],
-      ),
-    );
-  }
-}
-
-/* ───────────────────────── HELPER WIDGETS ───────────────────────── */
-
-class _CinemaFrame extends StatelessWidget {
-  final Widget child;
-  const _CinemaFrame({required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(24, 8, 24, 100),
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        final scale = 0.8 + (_controller.value * 0.4);
+        return Transform.scale(
+          scale: scale,
+          child: Container(
+            width: widget.size,
+            height: widget.size,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [WFColors.base, WFColors.gray900],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
-      ),
-      child: child,
+              shape: BoxShape.circle,
+              gradient: RadialGradient(
+                colors: [widget.color, widget.color.withOpacity(0)],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
 
-class _CTAButton extends StatelessWidget {
+class _CTAButton extends StatefulWidget {
   final String label;
-  final bool enabled;
   final VoidCallback onTap;
-  final bool primary;
+
   const _CTAButton({
     required this.label,
-    required this.enabled,
     required this.onTap,
-    required this.primary,
   });
 
   @override
-  Widget build(BuildContext context) {
-    final bg = primary
-        ? (enabled ? WFColors.purple400 : WFColors.gray600)
-        : Colors.transparent;
-    final fg = primary
-        ? WFColors.base
-        : (enabled ? WFColors.purple400 : WFColors.gray600);
-    final border = primary
-        ? null
-        : Border.all(
-            color: enabled ? WFColors.purple400 : WFColors.gray600,
-            width: 2,
-          );
+  State<_CTAButton> createState() => _CTAButtonState();
+}
 
+class _CTAButtonState extends State<_CTAButton> {
+  bool _isPressed = false;
+
+  @override
+  Widget build(BuildContext context) {
     return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: enabled ? onTap : null,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(vertical: 16),
+      onTapDown: (_) => setState(() => _isPressed = true),
+      onTapUp: (_) {
+        setState(() => _isPressed = false);
+        widget.onTap();
+      },
+      onTapCancel: () => setState(() => _isPressed = false),
+      child: AnimatedScale(
+        scale: _isPressed ? 0.95 : 1.0,
+        duration: const Duration(milliseconds: 100),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
         decoration: BoxDecoration(
-          color: bg,
-          borderRadius: BorderRadius.circular(14),
-          border: border,
-          boxShadow: primary && enabled
-              ? [
-                  BoxShadow(
-                    color: WFColors.purple400.withOpacity(0.3),
-                    blurRadius: 20,
-                    offset: const Offset(0, 8),
-                  ),
-                ]
-              : null,
-        ),
-        alignment: Alignment.center,
-        child: Text(
-          label,
-          style: WFTextStyles.bodyLarge.copyWith(
-            color: fg,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 0.5,
+            gradient: WFGradients.ctaButton,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: WFShadows.magentaGlow,
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ImageGrid extends StatelessWidget {
-  final List<String> assetPaths;
-  const _ImageGrid({required this.assetPaths});
-
-  @override
-  Widget build(BuildContext context) {
-    final w = MediaQuery.of(context).size.width;
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.symmetric(horizontal: w * 0.02, vertical: 8),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        mainAxisSpacing: 12,
-        crossAxisSpacing: 12,
-        childAspectRatio: 1,
-      ),
-      itemCount: assetPaths.length,
-      itemBuilder: (_, i) => ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Image.asset(assetPaths[i], fit: BoxFit.cover),
-      ),
-    );
-  }
-}
-
-class _Bullet extends StatelessWidget {
-  final String text;
-  const _Bullet(this.text);
-
-  @override
-  Widget build(BuildContext context) {
-    final w = MediaQuery.of(context).size.width;
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(width: 4),
-          Expanded(
-            child: Text(
-              text,
-              style: WFTextStyles.bodyMedium.copyWith(
-                color: WFColors.gray300,
-                fontSize: w * 0.033,
-                height: 1.5,
-              ),
+          child: Text(
+            widget.label,
+            style: GoogleFonts.inter(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
             ),
           ),
-        ],
+        ),
       ),
     );
   }
@@ -567,6 +811,7 @@ class _Bullet extends StatelessWidget {
 class _PageDots extends StatelessWidget {
   final int count;
   final int index;
+
   const _PageDots({required this.count, required this.index});
 
   @override
@@ -577,12 +822,12 @@ class _PageDots extends StatelessWidget {
         (i) => AnimatedContainer(
           duration: const Duration(milliseconds: 300),
           margin: const EdgeInsets.only(right: 8),
-          width: i == index ? 24 : 8,
+          width: i == index ? 32 : 8,
           height: 8,
           decoration: BoxDecoration(
             color: i == index
-                ? WFColors.purple400
-                : WFColors.gray600.withOpacity(0.5),
+                ? Colors.white
+                : Colors.white.withOpacity(0.3),
             borderRadius: BorderRadius.circular(4),
           ),
         ),
@@ -591,38 +836,10 @@ class _PageDots extends StatelessWidget {
   }
 }
 
-class _BrandedFooter extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        color: WFColors.purple400.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: WFColors.purple400.withOpacity(0.3),
-          width: 1,
-        ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.auto_awesome, color: WFColors.purple400, size: 16),
-          const SizedBox(width: 8),
-          Text('Beguile AI',
-              style: WFTextStyles.bodySmall.copyWith(
-                color: WFColors.purple400,
-                fontWeight: FontWeight.w700,
-              )),
-        ],
-      ),
-    );
-  }
-}
-
 class _GhostButton extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
+
   const _GhostButton({required this.label, required this.onTap});
 
   @override
@@ -641,8 +858,10 @@ class _GhostButton extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: WFTextStyles.bodyMedium.copyWith(
+          style: GoogleFonts.inter(
+            fontSize: 14,
             color: WFColors.gray300,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),

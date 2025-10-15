@@ -60,4 +60,25 @@ class WFColors {
   static const Color warning = Color(0xFFF59E0B);
   static const Color error = Color(0xFFEF4444);
   static const Color info = Color(0xFF3B82F6);
+
+  // Mentor theme colors
+  static const Color mentorSunTzu = Color(0xFF34D399); // emerald
+  static const Color mentorMachiavelli = Color(0xFFF43F5E); // rose-magenta
+  static const Color mentorCasanova = Color(0xFF3B82F6); // azure blue
+  static const Color mentorAurelius = Color(0xFFFBBF24); // amber
+  static const Color mentorCleopatra = Color(0xFF8B5CF6); // royal violet
+  static const Color mentorMonroe = Color(0xFFFBCAFE); // soft pink
+
+  // Additional colors from React design
+  static const Color emerald200 = Color(0xFFA7F3D0);
+  static const Color emerald300 = Color(0xFF6EE7B7);
+  static const Color emerald500 = Color(0xFF10B981);
+  static const Color fuchsia200 = Color(0xFFFBCAFE);
+  static const Color fuchsia500 = Color(0xFFD946EF);
+  static const Color fuchsia600 = Color(0xFFC026D3);
+  static const Color teal500 = Color(0xFF14B8A6);
+  static const Color cyan400 = Color(0xFF22D3EE);
+  static const Color blue500 = Color(0xFF3B82F6);
+  static const Color rose400 = Color(0xFFFB7185);
+  static const Color red500 = Color(0xFFEF4444);
 }
