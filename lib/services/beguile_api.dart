@@ -1,16 +1,19 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+// ❌ removed: import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// Handles all calls to the separate Beguile AI Scan + Council backend.
 /// This talks exclusively to https://beguilebackend-production.up.railway.app/api/v1
 /// and does not touch the other AI backends.
 class BeguileApi {
-  static String get _base => dotenv.env['BEGUILE_API_BASE'] ?? 'https://beguilebackend-production.up.railway.app/api/v1';
+  // Hard-coded base for stability (no .env required)
+  static const String _base = 'https://beguilebackend-production.up.railway.app/api/v1';
 
   /// --- INTERNAL POST HANDLER ---
   static Future<Map<String, dynamic>> _post(
-      String path, Map<String, dynamic> body) async {
+    String path,
+    Map<String, dynamic> body,
+  ) async {
     final uri = Uri.parse('$_base$path');
     final res = await http.post(
       uri,
@@ -35,7 +38,7 @@ class BeguileApi {
     required String text,
     required String perspective,
     String? mentorId,
-  }) async {
+  }) {
     return _post('/scan', {
       'text': text,
       'perspective': perspective,
@@ -49,7 +52,7 @@ class BeguileApi {
     required int age,
     required int tone,
     required String scenario,
-  }) async {
+  }) {
     return _post('/council/debate', {
       'mode': mode,
       'age': age,
