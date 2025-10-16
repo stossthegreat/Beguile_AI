@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+// ❌ removed: import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'firebase_options.dart';
 import 'data/services/cache_service.dart';
 import 'core/taxonomy/tag_migration.dart';
@@ -12,11 +11,11 @@ import 'app.dart';
 import 'data/services/onboarding_service.dart';
 import 'data/services/billing_service.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize environment variables
-  await dotenv.load(fileName: ".env");
+  // ❌ removed dotenv load (no .env needed)
+  // await dotenv.load(fileName: ".env");
 
   // Initialize Firebase
   await Firebase.initializeApp(
