@@ -34,19 +34,35 @@ class TabHeader extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Crystal ball logo
+          // Purple crystal ball logo
           Container(
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
+              shape: BoxShape.circle, // Perfect circle for orb/crystal ball
               gradient: const LinearGradient(
-                colors: WFColors.buttonGradient,
+                colors: [
+                  Color(0xFF9333EA), // purple-600
+                  Color(0xFF7C3AED), // purple-700
+                ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
+              boxShadow: [
+                BoxShadow(
+                  color: Color(0xFF8B5CF6).withOpacity(0.35),
+                  blurRadius: 10,
+                  spreadRadius: 1,
+                ),
+              ],
             ),
-            child: const Icon(Icons.auto_awesome, color: Colors.white, size: 20),
+            child: const Center(
+              child: Icon(
+                Icons.blur_circular, // Mystical blur effect = crystal ball
+                color: Colors.white,
+                size: 22,
+              ),
+            ),
           ),
           const SizedBox(width: 16),
           // Title and subtitle
