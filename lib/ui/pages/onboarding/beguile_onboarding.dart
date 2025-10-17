@@ -166,7 +166,7 @@ class _BeguileOnboardingState extends ConsumerState<BeguileOnboarding>
 
   void _onLastSlideContinue() {
     setState(() => _isExploding = true);
-    Future.delayed(const Duration(milliseconds: 2200), () {
+    Future.delayed(const Duration(milliseconds: 3500), () {
       if (mounted) {
         setState(() {
           _isExploding = false;
@@ -201,10 +201,10 @@ class _BeguileOnboardingState extends ConsumerState<BeguileOnboarding>
     return Stack(
       children: [
         // PageView with slides
-        PageView.builder(
-          controller: _controller,
+            PageView.builder(
+              controller: _controller,
           itemCount: _slides.length,
-          onPageChanged: (i) => setState(() => _page = i),
+              onPageChanged: (i) => setState(() => _page = i),
           itemBuilder: (context, index) {
             final slide = _slides[index];
             final isLastSlide = index == _slides.length - 1;
@@ -231,20 +231,20 @@ class _BeguileOnboardingState extends ConsumerState<BeguileOnboarding>
           },
         ),
         // Bottom UI (page dots)
-        Positioned(
-          bottom: 24,
-          left: 24,
-          right: 24,
-          child: IgnorePointer(
-            child: Row(
-              children: [
+            Positioned(
+              bottom: 24,
+              left: 24,
+              right: 24,
+              child: IgnorePointer(
+                child: Row(
+                  children: [
                 _PageDots(count: _slides.length, index: _page),
-                const Spacer(),
+                    const Spacer(),
               ],
-            ),
-          ),
-        ),
-      ],
+                  ),
+                ),
+              ),
+          ],
     );
   }
 
@@ -364,41 +364,31 @@ class _BeguileOnboardingState extends ConsumerState<BeguileOnboarding>
   Widget _buildExplodeOverlay() {
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0.0, end: 1.0),
-      duration: const Duration(milliseconds: 2200),
+      duration: const Duration(milliseconds: 3500),
       curve: Curves.easeInOut,
       builder: (context, progress, child) {
-        // Opacity: 0 → 1 → 0.9 → 0
-        double opacity;
-        if (progress < 0.3) {
-          opacity = progress / 0.3;
-        } else if (progress < 0.7) {
-          opacity = 1.0;
-        } else if (progress < 0.9) {
-          opacity = 0.9;
-        } else {
-          opacity = (1.0 - progress) * 9;
-        }
-
-        // Scale: 0 → 1.5 → 2
+        // Scale: 0.3 → 1.0 → hold → 1.0
         double scale;
-        if (progress < 0.5) {
-          scale = progress * 3; // 0 to 1.5
-        } else {
-          scale = 1.5 + (progress - 0.5) * 1.0; // 1.5 to 2
+        if (progress < 0.29) {  // 0-1000ms: grow
+          scale = 0.3 + (progress / 0.29) * 0.7;  // 0.3 → 1.0
+        } else if (progress < 0.86) {  // 1000-3000ms: hold at 1.0
+          scale = 1.0;
+        } else {  // 3000-3500ms: stay at 1.0
+          scale = 1.0;
         }
 
-        // Text opacity: 0 → 1 → 0
-        double textOpacity;
-        if (progress < 0.3) {
-          textOpacity = progress / 0.3;
-        } else if (progress < 0.7) {
-          textOpacity = 1.0;
-        } else {
-          textOpacity = (1.0 - progress) / 0.3;
+        // Opacity: fade in → hold → fade out
+        double opacity;
+        if (progress < 0.29) {  // Fade in during grow
+          opacity = progress / 0.29;  // 0 → 1.0
+        } else if (progress < 0.86) {  // Full opacity during hold
+          opacity = 1.0;
+        } else {  // Fade out at end
+          opacity = 1.0 - ((progress - 0.86) / 0.14);  // 1.0 → 0
         }
 
         return Opacity(
-          opacity: opacity,
+          opacity: opacity.clamp(0.0, 1.0),
           child: Container(
             decoration: const BoxDecoration(
               gradient: WFGradients.explodeGradient,
@@ -406,21 +396,18 @@ class _BeguileOnboardingState extends ConsumerState<BeguileOnboarding>
             child: Center(
               child: Transform.scale(
                 scale: scale,
-                child: Opacity(
-                  opacity: textOpacity.clamp(0.0, 1.0),
-                  child: Text(
-                    'BEGUILE AI',
-                    style: GoogleFonts.spaceGrotesk(
-                      fontSize: 80,
+                child: Text(
+                  'BEGUILE AI',
+                  style: GoogleFonts.spaceGrotesk(
+                    fontSize: 56,
                     fontWeight: FontWeight.w900,
-                      color: Colors.white,
-                      shadows: const [
-                        Shadow(
-                          blurRadius: 40,
-                          color: Colors.black54,
-                        ),
-                      ],
-                    ),
+                    color: Colors.white,
+                    shadows: const [
+                      Shadow(
+                        blurRadius: 40,
+                        color: Colors.black54,
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -560,7 +547,13 @@ class _CouncilRevealSequenceState extends State<_CouncilRevealSequence>
                     boxShadow: WFShadows.mentorGlow(mentor.themeColor),
                   ),
                   child: ClipOval(
-                    child: Image.asset(mentor.asset, fit: BoxFit.cover),
+                    child: Image.asset(
+                      mentor.asset,
+                      fit: BoxFit.cover,
+                      alignment: mentor.name == 'Marilyn Monroe'
+                          ? Alignment.topCenter
+                          : Alignment.center,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 48),
@@ -698,7 +691,13 @@ class _CouncilRevealSequenceState extends State<_CouncilRevealSequence>
         boxShadow: WFShadows.councilPortraitGlow(mentor.themeColor),
       ),
       child: ClipOval(
-        child: Image.asset(mentor.asset, fit: BoxFit.cover),
+        child: Image.asset(
+          mentor.asset,
+          fit: BoxFit.cover,
+          alignment: mentor.name == 'Marilyn Monroe'
+              ? Alignment.topCenter
+              : Alignment.center,
+        ),
       ),
     );
   }
