@@ -29,7 +29,7 @@ class SectionTitle extends StatelessWidget {
               style: WFTextStyles.sectionTitle.copyWith(
                 fontSize: 18, // Bigger title
                 fontWeight: FontWeight.w800, // Thicker text
-                color: Colors.black, // Black text for analyze page
+                color: Colors.white, // White text for visibility
               )),
         ],
       ),
