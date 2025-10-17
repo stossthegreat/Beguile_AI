@@ -15,65 +15,71 @@ class TabHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
         gradient: LinearGradient(
           colors: [
-            Colors.white.withOpacity(0.1),
-            Colors.white.withOpacity(0.05),
+            Color(0xFF9333EA).withOpacity(0.15), // purple-600 at 15%
+            Color(0xFF7C3AED).withOpacity(0.10), // purple-700 at 10%
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        border: Border.all(
-          color: Colors.white.withOpacity(0.2),
-          width: 1,
+        border: Border(
+          bottom: BorderSide(
+            color: Color(0xFF8B5CF6), // purple-500 neon accent
+            width: 2,
+          ),
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Color(0xFF8B5CF6).withOpacity(0.3), // Neon purple glow
+            blurRadius: 20,
+            offset: Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
         children: [
-          // Crystal ball emoji logo
+          // Crystal ball emoji logo (bigger)
           Container(
-            width: 40,
-            height: 40,
+            width: 60,
+            height: 60,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Color(0xFF8B5CF6).withOpacity(0.4),
+                  blurRadius: 15,
+                  spreadRadius: 2,
+                ),
+              ],
             ),
             child: const Center(
               child: Text(
                 '🔮',
-                style: TextStyle(fontSize: 28),
+                style: TextStyle(fontSize: 42),
               ),
             ),
           ),
-          const SizedBox(width: 16),
-          // Title and subtitle
+          const SizedBox(width: 20),
+          // "Beguile AI" text (way bigger)
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                    letterSpacing: 1.2,
+            child: Text(
+              'BEGUILE AI',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w900,
+                fontSize: 32,
+                letterSpacing: 2.5,
+                shadows: [
+                  Shadow(
+                    color: Color(0xFF8B5CF6).withOpacity(0.6),
+                    blurRadius: 12,
+                    offset: Offset(0, 2),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.7),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],
