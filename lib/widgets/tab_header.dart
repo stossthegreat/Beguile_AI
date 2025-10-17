@@ -34,33 +34,17 @@ class TabHeader extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Purple crystal ball logo
+          // Crystal ball emoji logo
           Container(
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              shape: BoxShape.circle, // Perfect circle for orb/crystal ball
-              gradient: const LinearGradient(
-                colors: [
-                  Color(0xFF9333EA), // purple-600
-                  Color(0xFF7C3AED), // purple-700
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Color(0xFF8B5CF6).withOpacity(0.35),
-                  blurRadius: 10,
-                  spreadRadius: 1,
-                ),
-              ],
+              borderRadius: BorderRadius.circular(12),
             ),
             child: const Center(
-              child: Icon(
-                Icons.blur_circular, // Mystical blur effect = crystal ball
-                color: Colors.white,
-                size: 22,
+              child: Text(
+                '🔮',
+                style: TextStyle(fontSize: 28),
               ),
             ),
           ),

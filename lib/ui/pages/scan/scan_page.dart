@@ -435,19 +435,23 @@ class _ScanPageState extends ConsumerState<ScanPage> {
 
   Widget _buildPerspectiveToggle() {
     return GlassCard(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
             'Analyze Perspective',
             style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
           ),
+          const SizedBox(height: 12),
           Row(
-            mainAxisSize: MainAxisSize.min,
             children: [
-              _buildToggleChip('🧍 You', perspective == 'you', () => setState(() => perspective = 'you')),
+              Expanded(
+                child: _buildToggleChip('🧍 You', perspective == 'you', () => setState(() => perspective = 'you')),
+              ),
               const SizedBox(width: 8),
-              _buildToggleChip('🕴️ Them', perspective == 'them', () => setState(() => perspective = 'them')),
+              Expanded(
+                child: _buildToggleChip('🕴️ Them', perspective == 'them', () => setState(() => perspective = 'them')),
+              ),
             ],
           ),
         ],
@@ -459,7 +463,7 @@ class _ScanPageState extends ConsumerState<ScanPage> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
           color: active ? WFColors.glassMedium : WFColors.glassLight,
           borderRadius: BorderRadius.circular(12),
@@ -467,9 +471,11 @@ class _ScanPageState extends ConsumerState<ScanPage> {
             color: active ? WFColors.glassBorder.withOpacity(0.4) : WFColors.glassBorder,
           ),
         ),
-        child: Text(
-          label,
-          style: const TextStyle(fontSize: 14, color: WFColors.textPrimary),
+        child: Center(
+          child: Text(
+            label,
+            style: const TextStyle(fontSize: 14, color: WFColors.textPrimary),
+          ),
         ),
       ),
     );
