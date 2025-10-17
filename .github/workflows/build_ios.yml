@@ -6,42 +6,49 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
-    runs-on: macos-latest  # 👈 Use macOS runner, not Ubuntu
+  build-ios:
+    runs-on: macos-latest   # <- macOS runner required for iOS builds
 
     steps:
-      - name: Checkout repository
+      - name: 🧾 Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Flutter
+      - name: ⚙️ Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: "3.32.0"
           channel: stable
 
-      - name: Setup Ruby for CocoaPods
+      - name: 💎 Setup Ruby for CocoaPods
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: "3.3"
 
-      - name: Install CocoaPods
+      - name: 📦 Install CocoaPods
         run: |
           sudo gem install cocoapods
           pod repo update
 
-      - name: Flutter clean & pub get
+      - name: 🧹 Flutter clean & pub get
         run: |
           flutter clean
           flutter pub get
           flutter precache --ios --force
 
-      - name: Build iOS (no codesign)
+      - name: 🧰 Generate iOS project + podhelper
         run: |
-          flutter build ipa --release --no-codesign
+          # Regenerate iOS structure if needed
+          flutter create .
+          flutter pub get
+          mkdir -p ios/Flutter
+          flutter build ios --no-codesign
 
-      - name: Upload iOS IPA
+      - name: 🔨 Build iOS IPA (no codesign)
+        run: flutter build ipa --release --no-codesign
+
+      - name: 📤 Upload iOS Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-release-ipa
+          name: beguile-ios-ipa
           path: build/ios/ipa/*.ipa
           if-no-files-found: error
