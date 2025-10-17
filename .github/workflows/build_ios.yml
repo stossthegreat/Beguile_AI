@@ -37,11 +37,16 @@ jobs:
 
       - name: 🧰 Generate iOS project + podhelper
         run: |
-          # Regenerate iOS structure if needed
-          flutter create .
+          # Ensure iOS structure exists
+          flutter create . --platforms=ios
           flutter pub get
+          
+          # Create Flutter directory and copy podhelper.rb from Flutter SDK
           mkdir -p ios/Flutter
-          flutter build ios --no-codesign
+          cp $FLUTTER_ROOT/packages/flutter_tools/bin/podhelper.rb ios/Flutter/
+          
+          # Verify the file exists
+          ls -la ios/Flutter/podhelper.rb
 
       - name: 🔨 Build iOS IPA (no codesign)
         run: flutter build ipa --release --no-codesign
