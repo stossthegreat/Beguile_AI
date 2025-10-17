@@ -38,6 +38,46 @@ class _ScanPageState extends ConsumerState<ScanPage> {
     ),
   ];
 
+  // Helper to get mentor portrait asset path
+  String _getMentorAsset(String mentorId) {
+    switch (mentorId) {
+      case 'casanova':
+        return 'assets/images/mentors/casanova.png';
+      case 'cleopatra':
+        return 'assets/images/mentors/cleopatra.png';
+      case 'machiavelli':
+        return 'assets/images/mentors/machiavelli.png';
+      case 'sun_tzu':
+        return 'assets/images/mentors/sun_tzu.png';
+      case 'marcus_aurelius':
+        return 'assets/images/mentors/marcus_aurelius.png';
+      case 'monroe':
+        return 'assets/images/mentors/monroe.png';
+      default:
+        return 'assets/images/mentors/casanova.png'; // fallback
+    }
+  }
+
+  // Helper to get mentor theme color
+  Color _getMentorThemeColor(String mentorId) {
+    switch (mentorId) {
+      case 'casanova':
+        return WFColors.mentorCasanova;
+      case 'cleopatra':
+        return WFColors.mentorCleopatra;
+      case 'machiavelli':
+        return WFColors.mentorMachiavelli;
+      case 'sun_tzu':
+        return WFColors.mentorSunTzu;
+      case 'marcus_aurelius':
+        return WFColors.mentorAurelius;
+      case 'monroe':
+        return WFColors.mentorMonroe;
+      default:
+        return WFColors.purple400;
+    }
+  }
+
   Mentor selectedMentor = _scanMentors[0];
   String perspective = 'you'; // 'you' | 'them'
   final TextEditingController _inputController = TextEditingController();
@@ -303,84 +343,87 @@ class _ScanPageState extends ConsumerState<ScanPage> {
             style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
           ),
         ),
-        // Add constrained box and scrollable grid to fix overflow
-        LayoutBuilder(
-          builder: (context, constraints) {
-            final double maxHeight = MediaQuery.of(context).size.height * 0.32; // dynamic
-            return ConstrainedBox(
-              constraints: BoxConstraints(
-                maxHeight: maxHeight,
-              ),
-              child: GridView.builder(
-                shrinkWrap: true,
-                physics: const BouncingScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  mainAxisSpacing: 10,
-                  crossAxisSpacing: 10,
-                  childAspectRatio: 0.9, // slightly taller cells
-                ),
-                itemCount: _scanMentors.length,
-                itemBuilder: (context, index) {
-                  final mentor = _scanMentors[index];
-                  final isSelected = selectedMentor.id == mentor.id;
+        // Mentor grid with portrait images (2 per row)
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2, // 2 mentors per row
+            mainAxisSpacing: 12,
+            crossAxisSpacing: 12,
+            childAspectRatio: 0.85, // Slightly taller to fit name below
+          ),
+          itemCount: _scanMentors.length,
+          itemBuilder: (context, index) {
+            final mentor = _scanMentors[index];
+            final isSelected = selectedMentor.id == mentor.id;
+            final themeColor = _getMentorThemeColor(mentor.id);
 
-                  return GestureDetector(
-                    onTap: () => setState(() => selectedMentor = mentor),
+            return GestureDetector(
+              onTap: () => setState(() => selectedMentor = mentor),
+              child: Column(
+                children: [
+                  // Image container (square with rounded corners)
+                  Expanded(
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 180),
-                      padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: isSelected ? WFColors.glassMedium : WFColors.glassLight,
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
-                          color: isSelected
-                              ? Color(int.parse('0xFF${mentor.color[0].substring(1)}'))
-                              : WFColors.glassBorder,
-                          width: isSelected ? 2 : 1,
+                          color: isSelected ? themeColor : Colors.white.withOpacity(0.2),
+                          width: isSelected ? 3 : 1,
                         ),
                         boxShadow: isSelected
                             ? [
                                 BoxShadow(
-                                  color: Color(int.parse('0xFF${mentor.color[0].substring(1)}'))
-                                      .withOpacity(0.35),
-                                  blurRadius: 8,
-                                  spreadRadius: 1,
+                                  color: themeColor.withOpacity(0.4),
+                                  blurRadius: 12,
+                                  spreadRadius: 2,
                                 ),
                               ]
                             : null,
                       ),
-                      transform: isSelected
-                          ? (Matrix4.identity()..scale(1.04))
-                          : Matrix4.identity(),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(mentor.avatar, style: const TextStyle(fontSize: 22)),
-                          const SizedBox(height: 6),
-                          Text(
-                            mentor.name,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: Color(int.parse('0xFF${mentor.color[0].substring(1)}')),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: Stack(
+                          children: [
+                            // Mentor portrait image
+                            Image.asset(
+                              _getMentorAsset(mentor.id),
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                              height: double.infinity,
+                              alignment: mentor.id == 'monroe'
+                                  ? Alignment.topCenter
+                                  : Alignment.center,
                             ),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            mentor.subtitle,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontSize: 10,
-                              color: WFColors.textTertiary,
-                            ),
-                          ),
-                        ],
+                            // Selection tint overlay
+                            if (isSelected)
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: themeColor.withOpacity(0.25),
+                                ),
+                              ),
+                          ],
+                        ),
                       ),
                     ),
-                  );
-                },
+                  ),
+                  const SizedBox(height: 8),
+                  // Name below image
+                  Text(
+                    mentor.name,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                      color: isSelected ? themeColor : Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
               ),
             );
           },
@@ -400,6 +443,7 @@ class _ScanPageState extends ConsumerState<ScanPage> {
             style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
           ),
           Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
               _buildToggleChip('🧍 You', perspective == 'you', () => setState(() => perspective = 'you')),
               const SizedBox(width: 8),
