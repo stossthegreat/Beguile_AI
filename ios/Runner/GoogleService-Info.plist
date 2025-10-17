@@ -1,7 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+<key>CLIENT_ID</key>
+<string>877360246883-i2dl0i0k390h4a4imm0jphjpn59jtfti.apps.googleusercontent.com</string>
+<key>REVERSED_CLIENT_ID</key>
+<string>com.googleusercontent.apps.877360246883-i2dl0i0k390h4a4imm0jphjpn59jtfti</string>
+<key>ANDROID_CLIENT_ID</key>
+<string>877360246883-1gutkjbc66qtp53tm9v4ap7278j658tq.apps.googleusercontent.com</string>
 <key>API_KEY</key>
 <string>AIzaSyAQM5ORmwZIgfLCm6QYPp1BLpU6kmIg90A</string>
 <key>GCM_SENDER_ID</key>
@@ -9,7 +13,7 @@
 <key>PLIST_VERSION</key>
 <string>1</string>
 <key>BUNDLE_ID</key>
-<string>Com.beguileai.app</string>
+<string>com.beguile.app</string>
 <key>PROJECT_ID</key>
 <string>beguile-ai</string>
 <key>STORAGE_BUCKET</key>
@@ -25,6 +29,6 @@
 <key>IS_SIGNIN_ENABLED</key>
 <true/>
 <key>GOOGLE_APP_ID</key>
-<string>1:877360246883:ios:fb8f0e4928a953a7ab4856</string>
+<string>1:877360246883:ios:0c4823e613efcf02ab4856</string>
 </dict>
 </plist>
