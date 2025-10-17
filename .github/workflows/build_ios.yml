@@ -1,29 +1,6 @@
-name: Build Flutter IPA - iOS
-
-on:
-  workflow_dispatch:
-
-jobs:
-  build:
-    runs-on: macos-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.32.0'
-          channel: stable
-
-      - name: Flutter pub get
-        run: flutter pub get
-
-      - name: Build iOS (release)
-        run: flutter build ipa --release --no-codesign
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-release-ipa
-          path: build/ios/ipa/*.ipa
+- name: Generate iOS build files
+        run: |
+          flutter clean
+          flutter pub get
+          flutter precache --ios
+          flutter build ios --no-codesign
