@@ -76,6 +76,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     final filteredEntries = _getFilteredEntries();
 
     return Scaffold(
+      resizeToAvoidBottomInset: false, // Prevents overflow when keyboard appears
       backgroundColor: WFColors.base,
       body: SafeArea(
         child: Padding(
