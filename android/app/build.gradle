@@ -1,4 +1,4 @@
-plugins {
+⁷plugins {
     id "com.android.application"
     id "org.jetbrains.kotlin.android"
     id "dev.flutter.flutter-gradle-plugin"
@@ -13,8 +13,8 @@ android {
         applicationId "com.beguileai.app"  // MUST match Play package exactly
         minSdk 24                          // Required by Play Billing v6+
         targetSdk 36
-        versionCode 15                     // 🔼 Bumped for new Play upload
-        versionName "1.6.0"                // 🔼 Visible app version
+        versionCode 16                     // 🔼 Bumped for new Play upload
+        versionName "1.7.0"                // 🔼 Visible app version
         // Required for Play Billing Library v6+
         resValue "string", "play_billing_provider_authority", "com.android.vending"
     }
