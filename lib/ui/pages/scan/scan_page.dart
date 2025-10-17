@@ -292,82 +292,102 @@ class _ScanPageState extends ConsumerState<ScanPage> {
   }
 
   Widget _buildMentorSelector() {
-    return GlassCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
+  return GlassCard(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Padding(
+          padding: EdgeInsets.only(bottom: 12),
+          child: Text(
             'Choose Mentor',
             style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
           ),
-          const SizedBox(height: 12),
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              childAspectRatio: 1.2,
-              crossAxisSpacing: 8,
-              mainAxisSpacing: 8,
-            ),
-            itemCount: _scanMentors.length,
-            itemBuilder: (context, index) {
-              final mentor = _scanMentors[index];
-              final isSelected = selectedMentor.id == mentor.id;
-              
-              return GestureDetector(
-                onTap: () => setState(() => selectedMentor = mentor),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: isSelected ? WFColors.glassMedium : WFColors.glassLight,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: isSelected 
-                          ? Color(int.parse('0xFF${mentor.color[0].substring(1)}'))
-                          : WFColors.glassBorder,
-                    ),
-                    boxShadow: isSelected ? [
-                      BoxShadow(
-                        color: Color(int.parse('0xFF${mentor.color[0].substring(1)}')).withOpacity(0.3),
-                        blurRadius: 8,
-                        spreadRadius: 1,
-                      ),
-                    ] : null,
-                  ),
-                  transform: isSelected ? (Matrix4.identity()..scale(1.03)) : Matrix4.identity(),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(mentor.avatar, style: const TextStyle(fontSize: 20)),
-                      const SizedBox(height: 4),
-                      Text(
-                        mentor.name,
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          color: Color(int.parse('0xFF${mentor.color[0].substring(1)}')),
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      Text(
-                        mentor.subtitle,
-                        style: const TextStyle(
-                          fontSize: 9,
-                          color: WFColors.textTertiary,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
+        ),
+        // Add constrained box and scrollable grid to fix overflow
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final double maxHeight = MediaQuery.of(context).size.height * 0.32; // dynamic
+            return ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: maxHeight,
+              ),
+              child: GridView.builder(
+                shrinkWrap: true,
+                physics: const BouncingScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  mainAxisSpacing: 10,
+                  crossAxisSpacing: 10,
+                  childAspectRatio: 0.9, // slightly taller cells
                 ),
-              );
-            },
-          ),
-        ],
-      ),
-    );
+                itemCount: _scanMentors.length,
+                itemBuilder: (context, index) {
+                  final mentor = _scanMentors[index];
+                  final isSelected = selectedMentor.id == mentor.id;
+
+                  return GestureDetector(
+                    onTap: () => setState(() => selectedMentor = mentor),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 180),
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: isSelected ? WFColors.glassMedium : WFColors.glassLight,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: isSelected
+                              ? Color(int.parse('0xFF${mentor.color[0].substring(1)}'))
+                              : WFColors.glassBorder,
+                          width: isSelected ? 2 : 1,
+                        ),
+                        boxShadow: isSelected
+                            ? [
+                                BoxShadow(
+                                  color: Color(int.parse('0xFF${mentor.color[0].substring(1)}'))
+                                      .withOpacity(0.35),
+                                  blurRadius: 8,
+                                  spreadRadius: 1,
+                                ),
+                              ]
+                            : null,
+                      ),
+                      transform: isSelected
+                          ? (Matrix4.identity()..scale(1.04))
+                          : Matrix4.identity(),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(mentor.avatar, style: const TextStyle(fontSize: 22)),
+                          const SizedBox(height: 6),
+                          Text(
+                            mentor.name,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: Color(int.parse('0xFF${mentor.color[0].substring(1)}')),
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            mentor.subtitle,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 10,
+                              color: WFColors.textTertiary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            );
+          },
+        ),
+      ],
+    ),
+  );
   }
 
   Widget _buildPerspectiveToggle() {
