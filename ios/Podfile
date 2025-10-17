@@ -1,20 +1,25 @@
-# ios/Podfile — clean, stable Flutter setup for iOS 13+
+# Uncomment this line to define a global platform for your project
+platform :ios, '12.0'
 
-platform :ios, '13.0'
+# CocoaPods analytics sends network stats during build time.
+ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 
-use_frameworks!
-use_modular_headers!
+project 'Runner', {
+  'Debug' => :debug,
+  'Profile' => :release,
+  'Release' => :release,
+}
 
-# Flutter integration
-flutter_application_path = File.expand_path('../..', __FILE__)
-load File.join(flutter_application_path, '.flutter-plugins-dependencies')
+flutter_application_path = File.expand_path('..', File.dirname(__FILE__))
+require File.expand_path(File.join(flutter_application_path, '.ios', 'Flutter', 'podhelper.rb'))
+
+flutter_ios_podfile_setup
 
 target 'Runner' do
   use_frameworks!
   use_modular_headers!
 
-  # Pods for Runner
-  flutter_install_all_ios_pods(flutter_application_path)
+  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
 
 post_install do |installer|
