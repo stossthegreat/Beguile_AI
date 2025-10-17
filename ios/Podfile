@@ -1,37 +1,24 @@
-platform :ios, '13.0'
+# ios/Podfile
+platform :ios, '15.5'
 
-# CocoaPods analytics sends network stats during build time.
-ENV['COCOAPODS_DISABLE_STATS'] = 'true'
+use_frameworks!
+use_modular_headers!
 
-project 'Runner', {
-  'Debug' => :debug,
-  'Profile' => :release,
-  'Release' => :release,
-}
-
-# Path to your Flutter installation
-flutter_application_path = File.expand_path('..', File.dirname(__FILE__))
-
-# ✅ FIXED: Load podhelper.rb from ios/Flutter (not .ios)
+# Ensure the podhelper.rb file is included
 require_relative 'Flutter/podhelper.rb'
 
-flutter_ios_podfile_setup
-
 target 'Runner' do
-  use_frameworks!
-  use_modular_headers!
-
-  # Install Flutter pods
-  flutter_install_all_ios_pods(File.dirname(File.realpath(__FILE__)))
+  flutter_application_path = '../'
+  install_all_flutter_pods(flutter_application_path)
 end
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|
-    flutter_additional_ios_build_settings(target)
-    
-    # Set minimum iOS version to 13.0 for all pods
+    flutter_post_install(installer)
+
+    # ✅ Enforce iOS 15.5 minimum for all pods
     target.build_configurations.each do |config|
-      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.5'
     end
   end
 end
