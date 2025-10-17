@@ -1,4 +1,3 @@
-# Uncomment this line to define a global platform for your project
 platform :ios, '12.0'
 
 # CocoaPods analytics sends network stats during build time.
@@ -13,8 +12,8 @@ project 'Runner', {
 # Path to your Flutter installation
 flutter_application_path = File.expand_path('..', File.dirname(__FILE__))
 
-# ✅ FIXED: Corrected to point to ios/Flutter/podhelper.rb instead of .ios
-require File.expand_path(File.join(flutter_application_path, 'Flutter', 'podhelper.rb'))
+# ✅ FIXED: Load podhelper.rb from ios/Flutter (not .ios)
+require_relative 'Flutter/podhelper.rb'
 
 flutter_ios_podfile_setup
 
