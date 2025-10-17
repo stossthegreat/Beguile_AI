@@ -1,9 +1,3 @@
-- name: 🧩 Generate iOS build files
-        run: |
-          flutter create .
-          flutter pub get
-          flutter build ios --no-codesign
-
 name: Build iOS IPA (No Codesign)
 
 on:
