@@ -395,6 +395,7 @@ class _CouncilPageState extends ConsumerState<CouncilPage>
   Widget _buildModeSelector(ModeAccent accent) {
     return GlassCard(
       child: Wrap(
+        alignment: WrapAlignment.center, // Center the preset buttons
         spacing: 8,
         runSpacing: 8,
         children: [
