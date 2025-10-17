@@ -457,13 +457,13 @@ class _CouncilRevealSequenceState extends State<_CouncilRevealSequence>
   void _startSequence() async {
     await Future.delayed(const Duration(milliseconds: 500));
     
-    // Show mentors one by one
+    // Show mentors one by one (seamless transitions)
     for (int i = 0; i < _mentors.length; i++) {
       if (!mounted) return;
       setState(() => _currentMentorIndex = i);
       _mentorAnimController.reset();
       _mentorAnimController.forward();
-      await Future.delayed(const Duration(milliseconds: 5500));
+      await Future.delayed(const Duration(milliseconds: 2000)); // Match animation duration for seamless transition
     }
 
     if (!mounted) return;
