@@ -45,8 +45,14 @@ jobs:
           mkdir -p ios/Flutter
           cp $FLUTTER_ROOT/packages/flutter_tools/bin/podhelper.rb ios/Flutter/
           
+          # Clean up old CocoaPods files to prevent conflicts
+          cd ios
+          rm -f Podfile.lock
+          rm -rf Pods/
+          pod cache clean --all
+          
           # Verify the file exists
-          ls -la ios/Flutter/podhelper.rb
+          ls -la Flutter/podhelper.rb
 
       - name: 🔨 Build iOS IPA (no codesign)
         run: flutter build ipa --release --no-codesign
