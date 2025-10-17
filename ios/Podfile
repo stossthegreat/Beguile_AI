@@ -10,8 +10,11 @@ project 'Runner', {
   'Release' => :release,
 }
 
+# Path to your Flutter installation
 flutter_application_path = File.expand_path('..', File.dirname(__FILE__))
-require File.expand_path(File.join(flutter_application_path, '.ios', 'Flutter', 'podhelper.rb'))
+
+# ✅ FIXED: Corrected to point to ios/Flutter/podhelper.rb instead of .ios
+require File.expand_path(File.join(flutter_application_path, 'Flutter', 'podhelper.rb'))
 
 flutter_ios_podfile_setup
 
@@ -19,7 +22,8 @@ target 'Runner' do
   use_frameworks!
   use_modular_headers!
 
-  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+  # Install Flutter pods
+  flutter_install_all_ios_pods(File.dirname(File.realpath(__FILE__)))
 end
 
 post_install do |installer|
