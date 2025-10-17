@@ -23,15 +23,6 @@ target 'Runner' do
 
   # Install Flutter pods
   flutter_install_all_ios_pods(File.dirname(File.realpath(__FILE__)))
-  
-  # Fix dependency conflicts
-  pod 'GoogleUtilities/UserDefaults', '8.0.2'
-  pod 'GoogleUtilities/AppDelegateSwizzler', '8.0.2'
-  pod 'GoogleUtilities/Environment', '8.0.2'
-  pod 'GoogleUtilities/Logger', '8.0.2'
-  pod 'GoogleUtilities/Network', '8.0.2'
-  pod 'GoogleUtilities/Reachability', '8.0.2'
-  pod 'MLKitVision', '7.0.0'
 end
 
 post_install do |installer|
