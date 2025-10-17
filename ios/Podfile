@@ -1,4 +1,4 @@
-platform :ios, '12.0'
+platform :ios, '13.0'
 
 # CocoaPods analytics sends network stats during build time.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
@@ -23,10 +23,24 @@ target 'Runner' do
 
   # Install Flutter pods
   flutter_install_all_ios_pods(File.dirname(File.realpath(__FILE__)))
+  
+  # Fix dependency conflicts
+  pod 'GoogleUtilities/UserDefaults', '8.0.2'
+  pod 'GoogleUtilities/AppDelegateSwizzler', '8.0.2'
+  pod 'GoogleUtilities/Environment', '8.0.2'
+  pod 'GoogleUtilities/Logger', '8.0.2'
+  pod 'GoogleUtilities/Network', '8.0.2'
+  pod 'GoogleUtilities/Reachability', '8.0.2'
+  pod 'MLKitVision', '7.0.0'
 end
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
+    
+    # Set minimum iOS version to 13.0 for all pods
+    target.build_configurations.each do |config|
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
+    end
   end
 end
