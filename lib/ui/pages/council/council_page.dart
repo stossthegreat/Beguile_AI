@@ -154,23 +154,27 @@ class _CouncilPageState extends ConsumerState<CouncilPage>
       // Set winner from API response
       final winnerData = response['winner'] as Map<String, dynamic>?;
       
+      Mentor winnerMentor;
+      
       if (winnerData == null || winnerData['id'] == null) {
-        print("❌ ERROR: Backend did not return valid winner data");
+        print("⚠️ WARNING: Backend did not return valid winner data, picking random mentor");
         print("Winner data received: $winnerData");
-        throw Exception('Invalid winner data from backend');
+        // Fallback: pick a random mentor from those who responded
+        winnerMentor = _councilMentors[Random().nextInt(_councilMentors.length)];
+        print("🎲 Random winner selected: ${winnerMentor.name}");
+      } else {
+        final backendWinnerId = winnerData['id'] as String;
+        print("🏆 Winner from backend: $backendWinnerId (${winnerData['name']})");
+        
+        final winnerId = _mapMentorId(backendWinnerId);
+        winnerMentor = _councilMentors.firstWhere(
+          (m) => m.id == winnerId,
+          orElse: () {
+            print("⚠️ WARNING: Could not find mentor with ID: $winnerId, picking random");
+            return _councilMentors[Random().nextInt(_councilMentors.length)];
+          },
+        );
       }
-      
-      final backendWinnerId = winnerData['id'] as String;
-      print("🏆 Winner from backend: $backendWinnerId (${winnerData['name']})");
-      
-      final winnerId = _mapMentorId(backendWinnerId);
-      final winnerMentor = _councilMentors.firstWhere(
-        (m) => m.id == winnerId,
-        orElse: () {
-          print("⚠️ WARNING: Could not find mentor with ID: $winnerId");
-          throw Exception('Winner mentor not found: $winnerId');
-        },
-      );
       
       if (mounted) {
         setState(() {
@@ -408,16 +412,18 @@ class _CouncilPageState extends ConsumerState<CouncilPage>
 
   Widget _buildModeSelector(ModeAccent accent) {
     return GlassCard(
-      child: Row(
-        children: [
-          Expanded(child: _buildModeChip('💋 Rizz', 'rizz')),
-          const SizedBox(width: 8),
-          Expanded(child: _buildModeChip('🔥 Seduction', 'seduction')),
-          const SizedBox(width: 8),
-          Expanded(child: _buildModeChip('⚡ Power', 'power')),
-          const SizedBox(width: 8),
-          Expanded(child: _buildModeChip('🧠 Analysis', 'analysis')),
-        ],
+      child: Center(
+        child: Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          alignment: WrapAlignment.center,
+          children: [
+            _buildModeChip('💋 Rizz', 'rizz'),
+            _buildModeChip('🔥 Seduction', 'seduction'),
+            _buildModeChip('⚡ Power', 'power'),
+            _buildModeChip('🧠 Analysis', 'analysis'),
+          ],
+        ),
       ),
     );
   }
@@ -427,7 +433,8 @@ class _CouncilPageState extends ConsumerState<CouncilPage>
     return GestureDetector(
       onTap: () => setState(() => selectedMode = mode),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        width: 140,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
           color: isActive ? WFColors.glassMedium : WFColors.glassLight,
           borderRadius: BorderRadius.circular(12),
@@ -435,9 +442,11 @@ class _CouncilPageState extends ConsumerState<CouncilPage>
             color: isActive ? WFColors.glassBorder.withOpacity(0.4) : WFColors.glassBorder,
           ),
         ),
-        child: Text(
-          label,
-          style: const TextStyle(fontSize: 14, color: WFColors.textPrimary),
+        child: Center(
+          child: Text(
+            label,
+            style: const TextStyle(fontSize: 14, color: WFColors.textPrimary),
+          ),
         ),
       ),
     );

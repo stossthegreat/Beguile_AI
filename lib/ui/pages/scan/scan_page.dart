@@ -192,11 +192,11 @@ class _ScanPageState extends ConsumerState<ScanPage> {
 
       final verdictsData = response['points'] as List? ?? [];
       
-      // Generate dynamic verdict based on mentor and perspective
+      // Get mentor name and generate varied verdicts
       final mentorName = mentorData['name'] as String;
-      final verdict = perspective == 'you'
-          ? 'You held frame; silence became your sword.'
-          : 'They masked control as care. Pattern exposed.';
+      
+      // Create varied verdicts based on score and perspective
+      final verdict = _generateDynamicVerdict(score.toInt(), perspective, mentorName);
 
       if (mounted) {
         setState(() {
@@ -229,6 +229,80 @@ class _ScanPageState extends ConsumerState<ScanPage> {
     }
   }
 
+
+  String _generateDynamicVerdict(int score, String perspective, String mentorName) {
+    // Create varied verdicts based on score ranges
+    if (perspective == 'you') {
+      if (score >= 85) {
+        final verdicts = [
+          'Mastery detected. Frame held perfectly.',
+          'Elite composure. Zero emotional leakage.',
+          'You commanded the exchange. Textbook control.',
+          'Dominance established. They chase now.',
+        ];
+        return verdicts[score % verdicts.length];
+      } else if (score >= 70) {
+        final verdicts = [
+          'Solid frame. Minor adjustments needed.',
+          'You held ground. Respect earned.',
+          'Good boundaries. Room to sharpen.',
+          'Strategic positioning maintained.',
+        ];
+        return verdicts[score % verdicts.length];
+      } else if (score >= 50) {
+        final verdicts = [
+          'Mixed signals detected. Tighten control.',
+          'Frame wavered. Regroup and recalibrate.',
+          'Reactive moments visible. Refine approach.',
+          'Power shared. Consider withdrawal tactics.',
+        ];
+        return verdicts[score % verdicts.length];
+      } else {
+        final verdicts = [
+          'Frame lost. Rebuild from scratch.',
+          'Over-invested. Pull back immediately.',
+          'Emotional exposure high. Reset needed.',
+          'Control inverted. Study and adapt.',
+        ];
+        return verdicts[score % verdicts.length];
+      }
+    } else {
+      // perspective == 'them'
+      if (score >= 85) {
+        final verdicts = [
+          'Expert manipulation detected. Pattern clear.',
+          'Calculated control tactics. Stay vigilant.',
+          'Psychological warfare identified. Exit advised.',
+          'High-level gaslighting. Document everything.',
+        ];
+        return verdicts[score % verdicts.length];
+      } else if (score >= 70) {
+        final verdicts = [
+          'Manipulation present. Set firm boundaries.',
+          'Control tactics emerging. Monitor closely.',
+          'Emotional leverage attempted. Guard up.',
+          'Subtle influence detected. Stay grounded.',
+        ];
+        return verdicts[score % verdicts.length];
+      } else if (score >= 50) {
+        final verdicts = [
+          'Mixed intentions. Trust but verify.',
+          'Some red flags. Proceed with caution.',
+          'Minor manipulation. Address directly.',
+          'Unclear motives. Demand transparency.',
+        ];
+        return verdicts[score % verdicts.length];
+      } else {
+        final verdicts = [
+          'No major red flags. Communication fair.',
+          'Genuine exchange detected. Low threat.',
+          'Healthy interaction patterns observed.',
+          'Minimal manipulation. Continue dialogue.',
+        ];
+        return verdicts[score % verdicts.length];
+      }
+    }
+  }
 
   void _insertSample() {
     _inputController.text = 
