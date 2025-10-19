@@ -7,6 +7,8 @@ import 'dart:math';
 import '../../../core/theme/theme.dart';
 import '../../../data/services/constants.dart';
 import '../../../data/models/mentor_models.dart';
+import '../../../data/models/vault_models.dart';
+import '../../../data/services/vault_service.dart';
 import '../../../services/beguile_api.dart';
 import '../../../widgets/tab_header.dart';
 import '../../../widgets/state_widgets.dart';
@@ -150,12 +152,24 @@ class _CouncilPageState extends ConsumerState<CouncilPage>
       await Future.delayed(const Duration(milliseconds: 700));
       
       // Set winner from API response
-      final winnerData = response['winner'] as Map<String, dynamic>? ?? {};
-      final backendWinnerId = winnerData['id'] as String? ?? 'casanova';
+      final winnerData = response['winner'] as Map<String, dynamic>?;
+      
+      if (winnerData == null || winnerData['id'] == null) {
+        print("❌ ERROR: Backend did not return valid winner data");
+        print("Winner data received: $winnerData");
+        throw Exception('Invalid winner data from backend');
+      }
+      
+      final backendWinnerId = winnerData['id'] as String;
+      print("🏆 Winner from backend: $backendWinnerId (${winnerData['name']})");
+      
       final winnerId = _mapMentorId(backendWinnerId);
       final winnerMentor = _councilMentors.firstWhere(
         (m) => m.id == winnerId,
-        orElse: () => _councilMentors.first,
+        orElse: () {
+          print("⚠️ WARNING: Could not find mentor with ID: $winnerId");
+          throw Exception('Winner mentor not found: $winnerId');
+        },
       );
       
       if (mounted) {
@@ -394,15 +408,15 @@ class _CouncilPageState extends ConsumerState<CouncilPage>
 
   Widget _buildModeSelector(ModeAccent accent) {
     return GlassCard(
-      child: Wrap(
-        alignment: WrapAlignment.center, // Center the preset buttons
-        spacing: 8,
-        runSpacing: 8,
+      child: Row(
         children: [
-          _buildModeChip('💋 Rizz', 'rizz'),
-          _buildModeChip('🔥 Seduction', 'seduction'),
-          _buildModeChip('⚡ Power', 'power'),
-          _buildModeChip('🧠 Analysis', 'analysis'),
+          Expanded(child: _buildModeChip('💋 Rizz', 'rizz')),
+          const SizedBox(width: 8),
+          Expanded(child: _buildModeChip('🔥 Seduction', 'seduction')),
+          const SizedBox(width: 8),
+          Expanded(child: _buildModeChip('⚡ Power', 'power')),
+          const SizedBox(width: 8),
+          Expanded(child: _buildModeChip('🧠 Analysis', 'analysis')),
         ],
       ),
     );
@@ -791,9 +805,11 @@ class _CouncilPageState extends ConsumerState<CouncilPage>
               
               Row(
                 children: [
-                  _buildActionButton('📋 Copy Verdict', () => _copyVerdict()),
-                  const SizedBox(width: 12),
-                  _buildActionButton('📸 Share', () => _shareVerdict(), isPrimary: true),
+                  _buildActionButton('💾 Save to Vault', () => _saveToVault()),
+                  const SizedBox(width: 8),
+                  _buildActionButton('📋 Copy', () => _copyVerdict()),
+                  const SizedBox(width: 8),
+                  _buildActionButton('📸 Share', () => _shareVerdict()),
                 ],
               ),
             ],
@@ -912,6 +928,47 @@ class _CouncilPageState extends ConsumerState<CouncilPage>
     if (winner == null) return;
     final text = '🏆 Council Winner: ${winner!.avatar} ${winner!.name}\n\n"$echo"\n\n— Beguile AI Council';
     Share.share(text);
+  }
+
+  void _saveToVault() async {
+    if (winner == null || responses.isEmpty) return;
+    
+    try {
+      final entry = VaultEntry.fromCouncil(
+        echo: echo,
+        winnerName: winner!.name,
+        mode: selectedMode,
+        responses: responses.map((r) {
+          final mentorId = _mapMentorId(r.mentorId);
+          final mentor = _councilMentors.firstWhere(
+            (m) => m.id == mentorId,
+            orElse: () => _councilMentors.first,
+          );
+          return '${mentor.name}: ${r.text}';
+        }).toList(),
+      );
+      
+      await VaultService.addEntry(entry);
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('💾 Saved to Vault!'),
+            backgroundColor: WFColors.purple400,
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error saving to vault: $e'),
+            backgroundColor: WFColors.error,
+          ),
+        );
+      }
+    }
   }
 }
 

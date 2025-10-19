@@ -7,6 +7,8 @@ import 'dart:math';
 import '../../../core/theme/theme.dart';
 import '../../../data/services/constants.dart';
 import '../../../data/models/mentor_models.dart';
+import '../../../data/models/vault_models.dart';
+import '../../../data/services/vault_service.dart';
 import '../../../services/beguile_api.dart';
 import '../../../widgets/tab_header.dart';
 import '../../../widgets/state_widgets.dart';
@@ -157,6 +159,24 @@ class _ScanPageState extends ConsumerState<ScanPage> {
 
       print("✅ Response: $response");
 
+      // Validate mentor data
+      final mentorData = response['mentor'] as Map<String, dynamic>?;
+      if (mentorData == null || mentorData['id'] == null || mentorData['name'] == null) {
+        print("❌ ERROR: Backend did not return valid mentor data");
+        print("Mentor data received: $mentorData");
+        throw Exception('Invalid mentor data from backend');
+      }
+      
+      print("🧠 Mentor from backend: ${mentorData['id']} (${mentorData['name']})");
+
+      // Validate and extract score
+      final score = response['score'] as num?;
+      if (score == null) {
+        print("❌ ERROR: Backend did not return score");
+        throw Exception('Invalid score from backend');
+      }
+      print("📊 Score from backend: $score");
+
       // Convert API response to UI model
       final moves = (response['points'] as List?)
           ?.map((p) => PowerMove(
@@ -171,14 +191,21 @@ class _ScanPageState extends ConsumerState<ScanPage> {
           .toList() ?? [];
 
       final verdictsData = response['points'] as List? ?? [];
+      
+      // Generate dynamic verdict based on mentor and perspective
+      final mentorName = mentorData['name'] as String;
+      final verdict = perspective == 'you'
+          ? 'You held frame; silence became your sword.'
+          : 'They masked control as care. Pattern exposed.';
 
       if (mounted) {
         setState(() {
           isScanning = false;
           verdicts = verdictsData;
           result = ScanResult(
-            score: (response['score'] as num?)?.toInt() ?? 85,
-            verdict: _generateVerdict(response),
+            score: score.toInt(),
+            verdict: verdict,
+            mentorName: mentorName,
             moves: moves.take(3).toList(),
             tags: selectedTags.take(6).toList(),
             quote: response['quote']?.toString() ?? 'Power respects power.',
@@ -202,18 +229,6 @@ class _ScanPageState extends ConsumerState<ScanPage> {
     }
   }
 
-  String _generateVerdict(Map<String, dynamic> response) {
-    // Use API response or generate based on perspective
-    if (response['mentor'] != null) {
-      final mentorName = response['mentor']['name'] ?? selectedMentor.name;
-      return perspective == 'you'
-          ? 'You held frame; silence became your sword.'
-          : 'They masked control as care. Pattern exposed.';
-    }
-    return perspective == 'you'
-        ? 'You held frame; silence became your sword.'
-        : 'They masked control as care. Pattern exposed.';
-  }
 
   void _insertSample() {
     _inputController.text = 
@@ -1055,9 +1070,11 @@ class _ScanPageState extends ConsumerState<ScanPage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _buildActionButton('📋 Copy Text', () => _copyText()),
-            const SizedBox(width: 12),
-            _buildActionButton('📸 Save Card', () => _saveCard(), isPrimary: true),
+            _buildActionButton('💾 Save to Vault', () => _saveToVault()),
+            const SizedBox(width: 8),
+            _buildActionButton('📋 Copy', () => _copyText()),
+            const SizedBox(width: 8),
+            _buildActionButton('📸 Share', () => _saveCard()),
           ],
         ),
       ],
@@ -1112,12 +1129,49 @@ class _ScanPageState extends ConsumerState<ScanPage> {
     
     Share.share(text);
   }
+
+  void _saveToVault() async {
+    if (result == null) return;
+    
+    try {
+      final entry = VaultEntry.fromScan(
+        title: '${result!.mentorName} - ${perspective.toUpperCase()}',
+        verdict: result!.verdict,
+        score: result!.score,
+        mentorName: result!.mentorName,
+        moves: result!.moves.map((m) => '${m.emoji} ${m.title}: ${m.description}').toList(),
+        quote: result!.quote,
+      );
+      
+      await VaultService.addEntry(entry);
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('💾 Saved to Vault!'),
+            backgroundColor: WFColors.purple400,
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error saving to vault: $e'),
+            backgroundColor: WFColors.error,
+          ),
+        );
+      }
+    }
+  }
 }
 
 // Data models
 class ScanResult {
   final int score;
   final String verdict;
+  final String mentorName;
   final List<PowerMove> moves;
   final List<String> tags;
   final String quote;
@@ -1125,6 +1179,7 @@ class ScanResult {
   ScanResult({
     required this.score,
     required this.verdict,
+    required this.mentorName,
     required this.moves,
     required this.tags,
     required this.quote,

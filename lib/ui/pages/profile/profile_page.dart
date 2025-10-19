@@ -5,25 +5,8 @@ import 'package:share_plus/share_plus.dart';
 import '../../../core/theme/theme.dart';
 import '../../../widgets/tab_header.dart';
 import '../../atoms/glass_card.dart';
-
-// Vault Entry Model
-class VaultEntry {
-  final String id;
-  final String type; // 'scan' or 'council'
-  final String title;
-  final String content;
-  final DateTime timestamp;
-  final Map<String, dynamic> metadata;
-
-  VaultEntry({
-    required this.id,
-    required this.type,
-    required this.title,
-    required this.content,
-    required this.timestamp,
-    required this.metadata,
-  });
-}
+import '../../../data/models/vault_models.dart';
+import '../../../data/services/vault_service.dart';
 
 class ProfilePage extends ConsumerStatefulWidget {
   const ProfilePage({super.key});
@@ -36,34 +19,26 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
   String selectedFilter = 'all'; // 'all', 'scan', 'council'
   final TextEditingController _searchController = TextEditingController();
   String searchQuery = '';
+  bool _isInitialized = false;
 
-  // Mock vault entries - in real app, this would come from local storage
-  final List<VaultEntry> _vaultEntries = [
-    VaultEntry(
-      id: '1',
-      type: 'scan',
-      title: 'Gaslighting Analysis',
-      content: 'They masked control as care. Pattern exposed.',
-      timestamp: DateTime.now().subtract(const Duration(hours: 2)),
-      metadata: {'score': 87, 'mentor': 'Machiavelli'},
-    ),
-    VaultEntry(
-      id: '2',
-      type: 'council',
-      title: 'Rizz Strategy Debate',
-      content: 'Desire answers to rhythm, not volume. Victory favors restraint.',
-      timestamp: DateTime.now().subtract(const Duration(days: 1)),
-      metadata: {'winner': 'Casanova', 'mode': 'rizz'},
-    ),
-    VaultEntry(
-      id: '3',
-      type: 'scan',
-      title: 'Manipulation Tactics',
-      content: 'You held frame; silence became your sword.',
-      timestamp: DateTime.now().subtract(const Duration(days: 2)),
-      metadata: {'score': 92, 'mentor': 'Sun Tzu'},
-    ),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _initVault();
+  }
+
+  Future<void> _initVault() async {
+    try {
+      await VaultService.init();
+      if (mounted) {
+        setState(() {
+          _isInitialized = true;
+        });
+      }
+    } catch (e) {
+      print('Error initializing vault: $e');
+    }
+  }
 
   @override
   void dispose() {
@@ -73,10 +48,19 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    if (!_isInitialized) {
+      return Scaffold(
+        backgroundColor: WFColors.base,
+        body: const Center(
+          child: CircularProgressIndicator(color: WFColors.purple400),
+        ),
+      );
+    }
+
     final filteredEntries = _getFilteredEntries();
 
     return Scaffold(
-      resizeToAvoidBottomInset: false, // Prevents overflow when keyboard appears
+      resizeToAvoidBottomInset: true, // Properly resizes when keyboard appears
       backgroundColor: WFColors.base,
       body: SafeArea(
         child: Padding(
@@ -187,7 +171,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
   }
 
   List<VaultEntry> _getFilteredEntries() {
-    var entries = _vaultEntries;
+    var entries = VaultService.getEntries();
     
     // Apply type filter
     if (selectedFilter != 'all') {
@@ -249,16 +233,17 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     );
   }
 
-  void _deleteEntry(VaultEntry entry) {
-    setState(() {
-      _vaultEntries.removeWhere((e) => e.id == entry.id);
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Entry deleted'),
-        backgroundColor: WFColors.gray700,
-      ),
-    );
+  void _deleteEntry(VaultEntry entry) async {
+    await VaultService.deleteEntry(entry.id);
+    setState(() {}); // Refresh UI
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Entry deleted'),
+          backgroundColor: WFColors.gray700,
+        ),
+      );
+    }
   }
 }
 

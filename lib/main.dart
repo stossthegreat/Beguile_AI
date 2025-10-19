@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show defaultTargetPlatform;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -17,10 +18,14 @@ Future<void> main() async {
   // ❌ removed dotenv load (no .env needed)
   // await dotenv.load(fileName: ".env");
 
-  // Initialize Firebase
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  // Initialize Firebase (skip on Linux - not supported)
+  if (!defaultTargetPlatform.toString().contains('linux')) {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } else {
+    print('⚠️ Skipping Firebase initialization on Linux (not supported)');
+  }
 
   // Initialize Hive for local storage
   await Hive.initFlutter();

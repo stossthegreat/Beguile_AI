@@ -1,1 +1,0 @@
-export 'ocr_bridge_stub.dart' if (dart.library.js) 'ocr_bridge_web.dart'; 

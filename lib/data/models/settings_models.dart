@@ -13,8 +13,6 @@ class AppSettings extends Equatable {
   final bool streaming;
   @JsonKey(name: 'save_history')
   final bool saveHistory;
-  @JsonKey(name: 'ocr_lang')
-  final String ocrLang; // "eng"
   @JsonKey(name: 'safe_mode')
   final bool safeMode;
 
@@ -23,7 +21,6 @@ class AppSettings extends Equatable {
     required this.defaultAnalyzeMode,
     required this.streaming,
     required this.saveHistory,
-    required this.ocrLang,
     required this.safeMode,
   });
 
@@ -37,7 +34,6 @@ class AppSettings extends Equatable {
         defaultAnalyzeMode: 'scan',
         streaming: true,
         saveHistory: true,
-        ocrLang: 'eng',
         safeMode: false,
       );
 
@@ -46,7 +42,6 @@ class AppSettings extends Equatable {
     String? defaultAnalyzeMode,
     bool? streaming,
     bool? saveHistory,
-    String? ocrLang,
     bool? safeMode,
   }) {
     return AppSettings(
@@ -54,7 +49,6 @@ class AppSettings extends Equatable {
       defaultAnalyzeMode: defaultAnalyzeMode ?? this.defaultAnalyzeMode,
       streaming: streaming ?? this.streaming,
       saveHistory: saveHistory ?? this.saveHistory,
-      ocrLang: ocrLang ?? this.ocrLang,
       safeMode: safeMode ?? this.safeMode,
     );
   }
@@ -65,7 +59,6 @@ class AppSettings extends Equatable {
         defaultAnalyzeMode,
         streaming,
         saveHistory,
-        ocrLang,
         safeMode
       ];
 }
