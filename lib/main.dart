@@ -11,6 +11,7 @@ import 'core/streak/streak_service.dart';
 import 'app.dart';
 import 'data/services/onboarding_service.dart';
 import 'data/services/billing_service.dart';
+import 'data/services/vault_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,6 +42,9 @@ Future<void> main() async {
 
   // Initialize onboarding service (reads flag)
   await OnboardingService.init();
+
+  // Initialize vault service
+  await VaultService.init();
 
   // Initialize billing (IAP) service (skip on web if fails)
   try {

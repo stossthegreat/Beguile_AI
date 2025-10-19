@@ -19,26 +19,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
   String selectedFilter = 'all'; // 'all', 'scan', 'council'
   final TextEditingController _searchController = TextEditingController();
   String searchQuery = '';
-  bool _isInitialized = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _initVault();
-  }
-
-  Future<void> _initVault() async {
-    try {
-      await VaultService.init();
-      if (mounted) {
-        setState(() {
-          _isInitialized = true;
-        });
-      }
-    } catch (e) {
-      print('Error initializing vault: $e');
-    }
-  }
 
   @override
   void dispose() {
@@ -48,15 +28,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_isInitialized) {
-      return Scaffold(
-        backgroundColor: WFColors.base,
-        body: const Center(
-          child: CircularProgressIndicator(color: WFColors.purple400),
-        ),
-      );
-    }
-
     final filteredEntries = _getFilteredEntries();
 
     return Scaffold(
