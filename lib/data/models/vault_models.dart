@@ -59,19 +59,75 @@ class VaultEntry extends HiveObject {
     required String echo,
     required String winnerName,
     required String mode,
-    required List<String> responses,
+    required String formattedContent,
   }) {
     final id = DateTime.now().millisecondsSinceEpoch.toString();
+    
+    // Create structured content
+    final structuredContent = '''
+🏆 COUNCIL VERDICT
+Mode: ${mode.toUpperCase()}
+Winner: $winnerName
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+MENTOR RESPONSES:
+
+$formattedContent
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+VERDICT:
+"$echo"
+
+— Beguile AI Council
+''';
+    
     return VaultEntry(
       id: id,
       type: 'council',
-      title: 'Council Verdict - ${mode.toUpperCase()}',
-      content: echo,
+      title: '🧠 Council • ${mode.toUpperCase()}',
+      content: structuredContent,
       timestamp: DateTime.now(),
       metadata: {
         'winner': winnerName,
         'mode': mode,
-        'responses': responses,
+        'echo': echo,
+      },
+    );
+  }
+
+  factory VaultEntry.fromMentorResponse({
+    required String mentorName,
+    required String mode,
+    required String responseText,
+  }) {
+    final id = DateTime.now().millisecondsSinceEpoch.toString();
+    
+    // Create structured content for individual mentor response
+    final structuredContent = '''
+💭 MENTOR INSIGHT
+Mentor: $mentorName
+Mode: ${mode.toUpperCase()}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+"$responseText"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+— Beguile AI Council
+''';
+    
+    return VaultEntry(
+      id: id,
+      type: 'mentor_response',
+      title: '$mentorName • ${mode.toUpperCase()}',
+      content: structuredContent,
+      timestamp: DateTime.now(),
+      metadata: {
+        'mentor': mentorName,
+        'mode': mode,
       },
     );
   }

@@ -285,18 +285,37 @@ class _CouncilPageState extends ConsumerState<CouncilPage>
   }
 
   String _craftEcho() {
-    final lines = {
-      'rizz': 'Desire answers to rhythm, not volume.',
-      'seduction': 'Be felt more than seen; scarcity is spellcraft.',
-      'power': 'Own the frame; price your presence.',
-      'analysis': 'Name the tactic, starve the loop.',
+    // Generate varied council verdicts based on mode and winner
+    final verdicts = {
+      'rizz': [
+        '${winner?.name ?? "The Council"} reads desire like sheet music. Composure creates pull.',
+        'Attraction flows to stillness. ${winner?.name ?? "Victory"} proved restraint magnetizes.',
+        'Frame control births chemistry. ${winner?.name ?? "The winner"} held the line.',
+        'Mystery generates momentum. ${winner?.name ?? "Excellence"} demonstrated scarcity.',
+      ],
+      'seduction': [
+        '${winner?.name ?? "Mastery"} weaponized absence. Desire grows in the gaps.',
+        'Influence blooms in silence. ${winner?.name ?? "The verdict"} shows patience dominates.',
+        '${winner?.name ?? "The Council"} reveals: withdrawal amplifies worth.',
+        'Scarcity is spellcraft. ${winner?.name ?? "Strategy"} makes them chase.',
+      ],
+      'power': [
+        '${winner?.name ?? "The Council"} commands the frame. Dominance flows from stillness.',
+        'Control the tempo, control the outcome. ${winner?.name ?? "Power"} executed perfectly.',
+        '${winner?.name ?? "Victory"} priced presence properly. Status answers to withdrawal.',
+        'Frame defines fate. ${winner?.name ?? "The winner"} owned the exchange.',
+      ],
+      'analysis': [
+        '${winner?.name ?? "The Council"} named the pattern. Clarity kills manipulation.',
+        'Facts disarm fog. ${winner?.name ?? "Strategy"} cut through emotional noise.',
+        '${winner?.name ?? "Analysis"} starved the loop. Recognition precedes freedom.',
+        'Logic exposes leverage. ${winner?.name ?? "The verdict"} identified the tactic.',
+      ],
     };
-    final endings = [
-      'Victory favors restraint.',
-      'Mystery moves markets.',
-      'Clarity compels compliance.'
-    ];
-    return '${lines[selectedMode]} ${endings[Random().nextInt(endings.length)]}';
+    
+    final modeVerdicts = verdicts[selectedMode] ?? verdicts['analysis']!;
+    final index = DateTime.now().millisecond % modeVerdicts.length;
+    return modeVerdicts[index];
   }
 
   void _insertSample() {
@@ -688,6 +707,8 @@ class _CouncilPageState extends ConsumerState<CouncilPage>
             children: [
               _buildActionButton('📋 Copy', () => _copyResponse(mentor, response)),
               const SizedBox(width: 8),
+              _buildActionButton('💾 Vault', () => _saveMentorResponseToVault(mentor, response)),
+              const SizedBox(width: 8),
               _buildActionButton('📸 Share', () => _shareResponse()),
             ],
           ),
@@ -794,19 +815,6 @@ class _CouncilPageState extends ConsumerState<CouncilPage>
                     const SizedBox(width: 8),
                     Expanded(child: _buildMetric('✨ Clarity', '88 %')),
                   ],
-                ),
-              ),
-              
-              const SizedBox(height: 16),
-              _buildGradientDivider(),
-              const SizedBox(height: 16),
-              
-              Text(
-                '"$echo"',
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontStyle: FontStyle.italic,
-                  color: WFColors.textSecondary,
                 ),
               ),
               
@@ -939,22 +947,56 @@ class _CouncilPageState extends ConsumerState<CouncilPage>
     Share.share(text);
   }
 
+  void _saveMentorResponseToVault(Mentor mentor, CouncilResponse response) async {
+    try {
+      final entry = VaultEntry.fromMentorResponse(
+        mentorName: mentor.name,
+        mode: selectedMode,
+        responseText: response.text,
+      );
+      
+      await VaultService.addEntry(entry);
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('💾 ${mentor.name}\'s response saved to Vault!'),
+            backgroundColor: WFColors.purple400,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error saving to vault: $e'),
+            backgroundColor: WFColors.error,
+          ),
+        );
+      }
+    }
+  }
+
   void _saveToVault() async {
     if (winner == null || responses.isEmpty) return;
     
     try {
+      // Format council responses with structure
+      final formattedResponses = responses.map((r) {
+        final mentorId = _mapMentorId(r.mentorId);
+        final mentor = _councilMentors.firstWhere(
+          (m) => m.id == mentorId,
+          orElse: () => _councilMentors.first,
+        );
+        return '${mentor.avatar} ${mentor.name}:\n"${r.text}"';
+      }).join('\n\n');
+      
       final entry = VaultEntry.fromCouncil(
         echo: echo,
         winnerName: winner!.name,
         mode: selectedMode,
-        responses: responses.map((r) {
-          final mentorId = _mapMentorId(r.mentorId);
-          final mentor = _councilMentors.firstWhere(
-            (m) => m.id == mentorId,
-            orElse: () => _councilMentors.first,
-          );
-          return '${mentor.name}: ${r.text}';
-        }).toList(),
+        formattedContent: formattedResponses,
       );
       
       await VaultService.addEntry(entry);
@@ -962,7 +1004,7 @@ class _CouncilPageState extends ConsumerState<CouncilPage>
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('💾 Saved to Vault!'),
+            content: Text('💾 Council debate saved to Vault!'),
             backgroundColor: WFColors.purple400,
             duration: Duration(seconds: 2),
           ),
