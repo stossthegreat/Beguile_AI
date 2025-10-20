@@ -23,33 +23,33 @@ class WFGradients {
     end: Alignment.bottomRight,
   );
 
-  // Onboarding slide gradients (matching React versions)
+  // Onboarding slide gradients (Dark Psych Theme)
   static const LinearGradient onboardingSlide1 = LinearGradient(
-    colors: [Color(0xFF34D399), Color(0xFFE879F9), Color(0xFF9333EA)],
+    colors: [Color(0xFFDC2626), Color(0xFFE11D48), Color(0xFFC026D3)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   static const LinearGradient onboardingSlide2 = LinearGradient(
-    colors: [Color(0xFF8B5CF6), Color(0xFFD946EF), Color(0xFFEF4444)],
+    colors: [Color(0xFF8B5CF6), Color(0xFF7C3AED), Color(0xFFEF4444)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   static const LinearGradient onboardingSlide3 = LinearGradient(
-    colors: [Color(0xFF6EE7B7), Color(0xFF22D3EE), Color(0xFF3B82F6)],
+    colors: [Color(0xFF6D28D9), Color(0xFFA855F7), Color(0xFFE11D48)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   static const LinearGradient onboardingSlide4 = LinearGradient(
-    colors: [Color(0xFFFB7185), Color(0xFFD946EF), Color(0xFF9333EA)],
+    colors: [Color(0xFFE11D48), Color(0xFFD946EF), Color(0xFF7C3AED)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   static const LinearGradient onboardingSlide5 = LinearGradient(
-    colors: [Color(0xFF22D3EE), Color(0xFF34D399), Color(0xFF14B8A6)],
+    colors: [Color(0xFFEF4444), Color(0xFF8B5CF6), Color(0xFFC026D3)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
