@@ -1,62 +1,28 @@
-{
-  "project_info": {
-    "project_number": "877360246883",
-    "project_id": "beguile-ai",
-    "storage_bucket": "beguile-ai.firebasestorage.app"
-  },
-  "client": [
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:877360246883:android:b59997e5a4d26683ab4856",
-        "android_client_info": {
-          "package_name": "com.beguileai.app"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "877360246883-4ov93r9nuph203de0i45h4rkubtiad76.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.beguileai.app",
-            "certificate_hash": "4fba178bea61bb0bd90b3b6f750dc88081003c53"
-          }
-        },
-        {
-          "client_id": "877360246883-li31umurs3eit2hhd2cus2uievmve6io.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.beguileai.app",
-            "certificate_hash": "0285973a9e587be40817c326bdce6674740a91eb"
-          }
-        },
-        {
-          "client_id": "877360246883-a192bklb2l1vn14vbu9tgjrf25ll7rie.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyB323h5RJN7FvoLXu82m4qW13s7xrZjgHs"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "877360246883-a192bklb2l1vn14vbu9tgjrf25ll7rie.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "877360246883-18i2ngbvncg6qgc3q28okd7lnb00spn6.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.beguileai.app"
-              }
-            }
-          ]
-        }
-      }
-    }
-  ],
-  "configuration_version": "1"
-}
+<plist version="1.0">
+<dict>
+<key>API_KEY</key>
+<string>AIzaSyBhgaP9tULorE3Qkfs5GPmx-KyLFh8iUk0</string>
+<key>GCM_SENDER_ID</key>
+<string>5598734427</string>
+<key>PLIST_VERSION</key>
+<string>1</string>
+<key>BUNDLE_ID</key>
+<string>com.beguile.app</string>
+<key>PROJECT_ID</key>
+<string>beguilemain</string>
+<key>STORAGE_BUCKET</key>
+<string>beguilemain.firebasestorage.app</string>
+<key>IS_ADS_ENABLED</key>
+<false/>
+<key>IS_ANALYTICS_ENABLED</key>
+<false/>
+<key>IS_APPINVITE_ENABLED</key>
+<true/>
+<key>IS_GCM_ENABLED</key>
+<true/>
+<key>IS_SIGNIN_ENABLED</key>
+<true/>
+<key>GOOGLE_APP_ID</key>
+<string>1:5598734427:ios:66525d33ef26cfa19a377e</string>
+</dict>
+</plist>
