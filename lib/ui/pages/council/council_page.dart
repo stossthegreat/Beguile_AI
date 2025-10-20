@@ -284,6 +284,32 @@ class _CouncilPageState extends ConsumerState<CouncilPage>
     return mapping[backendId] ?? backendId;
   }
 
+  int _generateScore(String mentorId, String metric) {
+    // Generate varied but consistent scores based on mentor and metric
+    final mentorScores = {
+      'sun_tzu': {'dominance': 91, 'charm': 73, 'clarity': 96},
+      'machiavelli': {'dominance': 88, 'charm': 85, 'clarity': 92},
+      'casanova': {'dominance': 79, 'charm': 97, 'clarity': 84},
+      'marcus_aurelius': {'dominance': 94, 'charm': 81, 'clarity': 98},
+      'cleopatra': {'dominance': 87, 'charm': 93, 'clarity': 89},
+      'monroe': {'dominance': 82, 'charm': 95, 'clarity': 86},
+    };
+    
+    // Mode modifiers
+    final modeBonus = {
+      'rizz': {'dominance': -3, 'charm': 5, 'clarity': 0},
+      'seduction': {'dominance': 0, 'charm': 4, 'clarity': -2},
+      'power': {'dominance': 6, 'charm': -4, 'clarity': 2},
+      'analysis': {'dominance': 2, 'charm': -5, 'clarity': 7},
+    };
+    
+    final baseScore = mentorScores[mentorId]?[metric] ?? 85;
+    final bonus = modeBonus[selectedMode]?[metric] ?? 0;
+    final finalScore = (baseScore + bonus).clamp(70, 99);
+    
+    return finalScore;
+  }
+
   String _craftEcho() {
     // Generate varied council verdicts based on mode and winner
     final verdicts = {
@@ -431,18 +457,26 @@ class _CouncilPageState extends ConsumerState<CouncilPage>
 
   Widget _buildModeSelector(ModeAccent accent) {
     return GlassCard(
-      child: Center(
-        child: Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          alignment: WrapAlignment.center,
-          children: [
-            _buildModeChip('💋 Rizz', 'rizz'),
-            _buildModeChip('🔥 Seduction', 'seduction'),
-            _buildModeChip('⚡ Power', 'power'),
-            _buildModeChip('🧠 Analysis', 'analysis'),
-          ],
-        ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildModeChip('💋 Rizz', 'rizz'),
+              const SizedBox(width: 8),
+              _buildModeChip('🔥 Seduction', 'seduction'),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildModeChip('⚡ Power', 'power'),
+              const SizedBox(width: 8),
+              _buildModeChip('🧠 Analysis', 'analysis'),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -798,7 +832,7 @@ class _CouncilPageState extends ConsumerState<CouncilPage>
               
               const SizedBox(height: 16),
               
-              // Metrics
+              // Metrics - Generate varied scores based on winner
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -808,12 +842,11 @@ class _CouncilPageState extends ConsumerState<CouncilPage>
                 ),
                 child: Row(
                   children: [
-                    Expanded(child: _buildMetric('🧠 Dominance', '94 %')),
+                    Expanded(child: _buildMetric('🧠 Dominance', '${_generateScore(winner?.id ?? 'default', 'dominance')} %')),
                     const SizedBox(width: 8),
-                    Expanded(child: _buildMetric('💋 Charm', 
-                        selectedMode == 'rizz' || selectedMode == 'seduction' ? '92 %' : '68 %')),
+                    Expanded(child: _buildMetric('💋 Charm', '${_generateScore(winner?.id ?? 'default', 'charm')} %')),
                     const SizedBox(width: 8),
-                    Expanded(child: _buildMetric('✨ Clarity', '88 %')),
+                    Expanded(child: _buildMetric('✨ Clarity', '${_generateScore(winner?.id ?? 'default', 'clarity')} %')),
                   ],
                 ),
               ),
