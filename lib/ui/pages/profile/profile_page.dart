@@ -330,14 +330,14 @@ class _VaultEntryCard extends StatelessWidget {
           
           const SizedBox(height: 8),
           
-          // Content
+          // Content - Show full text with better visibility
           Text(
             entry.content,
             style: WFTextStyles.bodyMedium.copyWith(
-              color: WFColors.textSecondary,
+              color: WFColors.textPrimary,
+              height: 1.5,
             ),
-            maxLines: 3,
-            overflow: TextOverflow.ellipsis,
+            maxLines: null, // Show all content, not just 3 lines
           ),
           
           const SizedBox(height: 16),
