@@ -460,20 +460,18 @@ class _CouncilPageState extends ConsumerState<CouncilPage>
       child: Column(
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _buildModeChip('💋 Rizz', 'rizz'),
+              Expanded(child: _buildModeChip('💋 Rizz', 'rizz')),
               const SizedBox(width: 8),
-              _buildModeChip('🔥 Seduction', 'seduction'),
+              Expanded(child: _buildModeChip('🔥 Seduction', 'seduction')),
             ],
           ),
           const SizedBox(height: 8),
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _buildModeChip('⚡ Power', 'power'),
+              Expanded(child: _buildModeChip('⚡ Power', 'power')),
               const SizedBox(width: 8),
-              _buildModeChip('🧠 Analysis', 'analysis'),
+              Expanded(child: _buildModeChip('🧠 Analysis', 'analysis')),
             ],
           ),
         ],
@@ -486,7 +484,6 @@ class _CouncilPageState extends ConsumerState<CouncilPage>
     return GestureDetector(
       onTap: () => setState(() => selectedMode = mode),
       child: Container(
-        width: 140,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
           color: isActive ? WFColors.glassMedium : WFColors.glassLight,
