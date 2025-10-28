@@ -34,108 +34,114 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
       resizeToAvoidBottomInset: true, // Properly resizes when keyboard appears
       backgroundColor: WFColors.base,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const TabHeader(
-                title: 'Beguile AI',
-                subtitle: 'VAULT',
-              ),
-              
-              const SizedBox(height: 24),
+        child: Column(
+          children: [
+            // Fixed header and search section
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const TabHeader(
+                    title: 'Beguile AI',
+                    subtitle: 'VAULT',
+                  ),
+                  
+                  const SizedBox(height: 24),
 
-              // Search and Filter
-              GlassCard(
-                child: Column(
-                  children: [
-                    // Search Bar
-                    TextField(
-                      controller: _searchController,
-                      onChanged: (value) {
-                        setState(() {
-                          searchQuery = value.toLowerCase();
-                        });
-                      },
-                      decoration: InputDecoration(
-                        hintText: 'Search your vault...',
-                        hintStyle: WFTextStyles.bodyMedium.copyWith(
-                          color: WFColors.textMuted,
-                        ),
-                        prefixIcon: const Icon(
-                          Icons.search,
-                          color: WFColors.purple400,
-                        ),
-                        filled: true,
-                        fillColor: WFColors.gray800.withOpacity(0.5),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(color: WFColors.glassBorder),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(color: WFColors.glassBorder),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(color: WFColors.purple400, width: 2),
-                        ),
-                      ),
-                    ),
-                    
-                    const SizedBox(height: 16),
-                    
-                    // Filter Chips
-                    Row(
+                  // Search and Filter
+                  GlassCard(
+                    child: Column(
                       children: [
-                        _FilterChip(
-                          label: 'All',
-                          isSelected: selectedFilter == 'all',
-                          onTap: () => setState(() => selectedFilter = 'all'),
+                        // Search Bar
+                        TextField(
+                          controller: _searchController,
+                          onChanged: (value) {
+                            setState(() {
+                              searchQuery = value.toLowerCase();
+                            });
+                          },
+                          decoration: InputDecoration(
+                            hintText: 'Search your vault...',
+                            hintStyle: WFTextStyles.bodyMedium.copyWith(
+                              color: WFColors.textMuted,
+                            ),
+                            prefixIcon: const Icon(
+                              Icons.search,
+                              color: WFColors.purple400,
+                            ),
+                            filled: true,
+                            fillColor: WFColors.gray800.withOpacity(0.5),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: WFColors.glassBorder),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: WFColors.glassBorder),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: WFColors.purple400, width: 2),
+                            ),
+                          ),
                         ),
-                        const SizedBox(width: 8),
-                        _FilterChip(
-                          label: '🔍 Scan',
-                          isSelected: selectedFilter == 'scan',
-                          onTap: () => setState(() => selectedFilter = 'scan'),
-                        ),
-                        const SizedBox(width: 8),
-                        _FilterChip(
-                          label: '🧠 Council',
-                          isSelected: selectedFilter == 'council',
-                          onTap: () => setState(() => selectedFilter = 'council'),
+                        
+                        const SizedBox(height: 16),
+                        
+                        // Filter Chips
+                        Row(
+                          children: [
+                            _FilterChip(
+                              label: 'All',
+                              isSelected: selectedFilter == 'all',
+                              onTap: () => setState(() => selectedFilter = 'all'),
+                            ),
+                            const SizedBox(width: 8),
+                            _FilterChip(
+                              label: '🔍 Scan',
+                              isSelected: selectedFilter == 'scan',
+                              onTap: () => setState(() => selectedFilter = 'scan'),
+                            ),
+                            const SizedBox(width: 8),
+                            _FilterChip(
+                              label: '🧠 Council',
+                              isSelected: selectedFilter == 'council',
+                              onTap: () => setState(() => selectedFilter = 'council'),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
-                ),
-              ),
+                  ),
 
-              const SizedBox(height: 20),
-
-              // Vault Entries
-              Expanded(
-                child: filteredEntries.isEmpty
-                    ? _buildEmptyState()
-                    : ListView.builder(
-                        itemCount: filteredEntries.length,
-                        itemBuilder: (context, index) {
-                          final entry = filteredEntries[index];
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: _VaultEntryCard(
-                              entry: entry,
-                              onShare: () => _shareEntry(entry),
-                              onCopy: () => _copyEntry(entry),
-                              onDelete: () => _deleteEntry(entry),
-                            ),
-                          );
-                        },
-                      ),
+                  const SizedBox(height: 20),
+                ],
               ),
-            ],
-          ),
+            ),
+
+            // Scrollable Vault Entries
+            Expanded(
+              child: filteredEntries.isEmpty
+                  ? _buildEmptyState()
+                  : ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      itemCount: filteredEntries.length,
+                      itemBuilder: (context, index) {
+                        final entry = filteredEntries[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: _VaultEntryCard(
+                            entry: entry,
+                            onShare: () => _shareEntry(entry),
+                            onCopy: () => _copyEntry(entry),
+                            onDelete: () => _deleteEntry(entry),
+                          ),
+                        );
+                      },
+                    ),
+            ),
+          ],
         ),
       ),
     );
