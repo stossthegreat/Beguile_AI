@@ -1,7 +1,7 @@
 name: whisperfire
 description: WHISPERFIRE - Advanced Psychological Defense & Social Intelligence Training App. Master the art of influence, read people, and develop unshakeable confidence through AI-powered lessons and real-world analysis.
 publish_to: 'none'
-version: 1.0.2+3
+version: 1.0.2+4
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
