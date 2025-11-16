@@ -57,19 +57,19 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAQM5ORmwZIgfLCm6QYPp1BLpU6kmIg90A',
-    appId: '1:877360246883:ios:fb8f0e4928a953a7ab4856',
+    appId: '1:877360246883:ios:0c4823e613efcf02ab4856',
     messagingSenderId: '877360246883',
     projectId: 'beguile-ai',
     storageBucket: 'beguile-ai.firebasestorage.app',
-    iosBundleId: 'Com.beguileai.app',
+    iosBundleId: 'com.beguile.app',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyAQM5ORmwZIgfLCm6QYPp1BLpU6kmIg90A',
-    appId: '1:877360246883:ios:fb8f0e4928a953a7ab4856',
+    appId: '1:877360246883:ios:0c4823e613efcf02ab4856',
     messagingSenderId: '877360246883',
     projectId: 'beguile-ai',
     storageBucket: 'beguile-ai.firebasestorage.app',
-    iosBundleId: 'Com.beguileai.app',
+    iosBundleId: 'com.beguile.app',
   );
 }
