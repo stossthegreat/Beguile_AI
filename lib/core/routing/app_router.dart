@@ -15,6 +15,7 @@ import '../../ui/pages/auth/login_page.dart';
 import '../../ui/pages/paywall/paywall_page.dart';
 import '../../data/services/paywall_service.dart';
 import '../../data/services/onboarding_service.dart';
+import '../../ui/shared/loading_shell.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -30,10 +31,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       final isOnRootOrHome = location == '/' || location == '/home';
       final isOnPaywall = location == '/paywall';
 
-      // During auth loading, route away from blank root/home to avoid white screen
+      // During auth loading, always show onboarding to avoid blank screen
       if (authState == AuthState.loading) {
-        if (isOnRootOrHome) {
-          return OnboardingService.isCompleted ? '/paywall' : '/onboarding';
+        // Always redirect to onboarding during loading to show something
+        if (isOnRootOrHome || location == '/') {
+          return '/onboarding';
         }
         return null;
       }
@@ -63,7 +65,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/',
         name: 'root',
-        builder: (context, state) => const SizedBox.shrink(),
+        builder: (context, state) => const LoadingShell(message: 'Initializing Beguile AI...'),
       ),
       // Alias: /home (no UI, just a path that gets redirected in redirect())
       GoRoute(
