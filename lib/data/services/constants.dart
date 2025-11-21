@@ -153,6 +153,20 @@ const List<Mentor> _allMentors = [
       longDescription: 'Last pharaoh of Egypt who captivated Julius Caesar and Mark Antony. Her intelligence, charm, and political cunning made her seductive power legendary, though her beauty was said to be moderate.',
     ),
     Mentor(
+      id: 'helen_of_troy',
+      name: 'Helen of Troy',
+      subtitle: 'The Face That Launched a Thousand Ships',
+      avatar: '✨',
+      description: 'Beauty so legendary it sparked the Trojan War',
+      color: ['#EC4899', '#BE185D'], // pink-500 to pink-700
+      greeting:
+          'I am Helen of Troy. My beauty sparked a war that lasted ten years and toppled kingdoms. Beauty is power - but the stories men tell about it reveal far more than the face itself.',
+      presets: ['drill', 'advise', 'roleplay', 'chat'],
+      realm: 'seduction',
+      imagePath: 'assets/images/mentors/helen_of_troy.png',
+      longDescription: 'Legendary figure from Greek mythology whose extraordinary beauty sparked the Trojan War. Whether she went willingly with Paris or was abducted, her story explores how beauty becomes both power and weapon in the hands of those who wield it.',
+    ),
+    Mentor(
       id: 'machiavelli',
       name: 'Machiavelli',
       subtitle: 'Master of Political Strategy',
