@@ -27,15 +27,16 @@ class MentorListScreen extends StatelessWidget {
           // App bar with realm info
           SliverAppBar(
             backgroundColor: _parseColor(realm.gradient[0]),
-            expandedHeight: 200,
+            expandedHeight: 220,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
+              titlePadding: const EdgeInsets.only(left: 56, bottom: 16, right: 16),
               title: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     realm.icon,
-                    style: const TextStyle(fontSize: 24),
+                    style: const TextStyle(fontSize: 20),
                   ),
                   const SizedBox(width: 8),
                   Flexible(
@@ -43,14 +44,13 @@ class MentorListScreen extends StatelessWidget {
                       realm.name,
                       style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 20,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
                 ],
               ),
-              titlePadding: const EdgeInsets.only(left: 56, bottom: 16, right: 16),
               background: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -64,7 +64,7 @@ class MentorListScreen extends StatelessWidget {
                 ),
                 child: SafeArea(
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 80, 24, 60),
+                    padding: const EdgeInsets.fromLTRB(24, 70, 24, 80),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -74,19 +74,21 @@ class MentorListScreen extends StatelessWidget {
                           realm.name,
                           style: const TextStyle(
                             color: Colors.white,
-                            fontSize: 32,
+                            fontSize: 36,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 0.5,
+                            height: 1.1,
                           ),
                         ),
-                        const SizedBox(height: 8),
-                        // Subtitle below
+                        const SizedBox(height: 12),
+                        // Subtitle below with more space
                         Text(
                           realm.subtitle,
                           style: TextStyle(
-                            color: Colors.white.withOpacity(0.9),
-                            fontSize: 16,
+                            color: Colors.white.withOpacity(0.95),
+                            fontSize: 18,
                             fontWeight: FontWeight.w400,
+                            height: 1.3,
                           ),
                         ),
                       ],

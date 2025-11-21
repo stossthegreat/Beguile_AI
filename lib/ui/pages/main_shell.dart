@@ -83,16 +83,16 @@ class _MainShellContent extends StatelessWidget {
           onTap: (index) => _onItemTapped(context, index),
           items: const [
             BottomNavigationBarItem(
+              icon: Text('👑', style: TextStyle(fontSize: 20)),
+              label: 'Mentors',
+            ),
+            BottomNavigationBarItem(
               icon: Text('🕵️‍♀️', style: TextStyle(fontSize: 20)),
               label: 'Scan',
             ),
             BottomNavigationBarItem(
               icon: Text('🧠', style: TextStyle(fontSize: 20)),
               label: 'Council',
-            ),
-            BottomNavigationBarItem(
-              icon: Text('👑', style: TextStyle(fontSize: 20)),
-              label: 'Mentors',
             ),
             BottomNavigationBarItem(
               icon: Text('🧩', style: TextStyle(fontSize: 20)),
@@ -114,9 +114,9 @@ class _MainShellContent extends StatelessWidget {
 
   int _getCurrentIndex(BuildContext context) {
     final String location = GoRouterState.of(context).matchedLocation;
-    if (location.startsWith('/scan')) return 0;
-    if (location.startsWith('/council')) return 1;
-    if (location.startsWith('/mentors')) return 2;
+    if (location.startsWith('/mentors')) return 0;
+    if (location.startsWith('/scan')) return 1;
+    if (location.startsWith('/council')) return 2;
     if (location.startsWith('/analyze')) return 3;
     if (location.startsWith('/vault')) return 4;
     if (location.startsWith('/settings')) return 5;
@@ -126,13 +126,13 @@ class _MainShellContent extends StatelessWidget {
   void _onItemTapped(BuildContext context, int index) {
     switch (index) {
       case 0:
-        context.goNamed('scan');
+        context.goNamed('mentors');
         break;
       case 1:
-        context.goNamed('council');
+        context.goNamed('scan');
         break;
       case 2:
-        context.goNamed('mentors');
+        context.goNamed('council');
         break;
       case 3:
         context.goNamed('analyze');
