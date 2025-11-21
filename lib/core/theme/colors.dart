@@ -81,4 +81,8 @@ class WFColors {
   static const Color blue500 = Color(0xFF3B82F6);
   static const Color rose400 = Color(0xFFFB7185);
   static const Color red500 = Color(0xFFEF4444);
+  
+  // Card and border colors for mentor UI
+  static const Color cardDark = Color(0xFF1A1A1A); // Slightly lighter than base
+  static const Color border = Color(0xFF2A2A2A); // Subtle border
 }

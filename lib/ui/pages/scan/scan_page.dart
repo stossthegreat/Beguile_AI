@@ -37,6 +37,9 @@ class _ScanPageState extends ConsumerState<ScanPage> {
       color: ['#FF99C8', '#F472B6'], // soft pink to fuchsia
       greeting: 'Darling, I am Marilyn Monroe. They only see what you show them. Softness can be armor when you choose it. Charm quietly—power doesn\'t need volume.',
       presets: ['drill', 'advise', 'roleplay', 'chat'],
+      realm: 'seduction', // ADDED
+      imagePath: 'assets/images/mentors/monroe.png', // ADDED
+      longDescription: 'Hollywood icon whose blend of vulnerability and sensuality captivated millions. Her charm was strategic, her softness deliberate.', // ADDED
     ),
   ];
 
