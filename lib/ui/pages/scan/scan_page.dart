@@ -27,13 +27,13 @@ class ScanPage extends ConsumerStatefulWidget {
 class _ScanPageState extends ConsumerState<ScanPage> {
   // Original 6 mentors for scan page
   static final List<Mentor> _scanMentors = [
-    MentorConstants.getMentorById('casanova')!,
-    MentorConstants.getMentorById('cleopatra')!,
-    MentorConstants.getMentorById('machiavelli')!,
-    MentorConstants.getMentorById('sun_tzu')!,
-    MentorConstants.getMentorById('marcus_aurelius')!,
-    MentorConstants.getMentorById('monroe')!,
-  ];
+    MentorConstants.getMentorById('casanova'),
+    MentorConstants.getMentorById('cleopatra'),
+    MentorConstants.getMentorById('machiavelli'),
+    MentorConstants.getMentorById('sun_tzu'),
+    MentorConstants.getMentorById('marcus_aurelius'),
+    MentorConstants.getMentorById('monroe'),
+  ].whereType<Mentor>().toList();
 
   // Helper to get mentor portrait asset path
   String _getMentorAsset(String mentorId) {
@@ -75,7 +75,7 @@ class _ScanPageState extends ConsumerState<ScanPage> {
     }
   }
 
-  Mentor selectedMentor = _scanMentors[0];
+  late Mentor selectedMentor;
   String perspective = 'you'; // 'you' | 'them'
   final TextEditingController _inputController = TextEditingController();
   ScanResult? result;
@@ -87,6 +87,9 @@ class _ScanPageState extends ConsumerState<ScanPage> {
   @override
   void initState() {
     super.initState();
+    // Initialize selected mentor
+    selectedMentor = _scanMentors.isNotEmpty ? _scanMentors[0] : MentorConstants.mentors[0];
+    
     _inputController.addListener(() {
       final hasText = _inputController.text.trim().isNotEmpty;
       if (hasText != _hasText) {
