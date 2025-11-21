@@ -472,7 +472,7 @@ class _ScanPageState extends ConsumerState<ScanPage> {
                         borderRadius: BorderRadius.circular(16),
                         child: Stack(
                           children: [
-                            // Mentor portrait image
+                            // Mentor portrait image with emoji fallback
                             Image.asset(
                               _getMentorAsset(mentor.id),
                               fit: BoxFit.cover,
@@ -481,6 +481,27 @@ class _ScanPageState extends ConsumerState<ScanPage> {
                               alignment: mentor.id == 'monroe'
                                   ? Alignment.topCenter
                                   : Alignment.center,
+                              errorBuilder: (context, error, stackTrace) {
+                                // Show emoji avatar as fallback if image fails
+                                return Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        themeColor.withOpacity(0.3),
+                                        themeColor.withOpacity(0.1),
+                                      ],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      mentor.avatar,
+                                      style: const TextStyle(fontSize: 64),
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
                             // Selection tint overlay
                             if (isSelected)

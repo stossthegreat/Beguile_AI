@@ -60,7 +60,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       final authService = ref.read(authServiceProvider);
       await authService.signInWithGoogle();
       if (mounted) {
-        context.go('/scan');
+        context.go('/mentors');
       }
     } catch (e) {
       if (mounted) {
@@ -82,7 +82,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       final authService = ref.read(authServiceProvider);
       await authService.signInWithApple();
       if (mounted) {
-        context.go('/scan');
+        context.go('/mentors');
       }
     } catch (e) {
       if (mounted) {
@@ -116,7 +116,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         );
       }
       if (mounted) {
-        context.go('/scan');
+        context.go('/mentors');
       }
     } catch (e) {
       if (mounted) {
