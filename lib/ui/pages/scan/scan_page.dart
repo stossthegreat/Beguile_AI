@@ -25,22 +25,14 @@ class ScanPage extends ConsumerStatefulWidget {
 }
 
 class _ScanPageState extends ConsumerState<ScanPage> {
-  // Scan-specific mentors (includes Monroe for backend compatibility)
+  // Original 6 mentors for scan page
   static final List<Mentor> _scanMentors = [
-    ...MentorConstants.mentors.where((m) => m.id != 'churchill'), // All except Churchill
-    const Mentor(
-      id: 'monroe',
-      name: 'Marilyn Monroe',
-      subtitle: 'Magnetic Charm',
-      avatar: '🌹',
-      description: 'Control the spotlight—never chase it',
-      color: ['#FF99C8', '#F472B6'], // soft pink to fuchsia
-      greeting: 'Darling, I am Marilyn Monroe. They only see what you show them. Softness can be armor when you choose it. Charm quietly—power doesn\'t need volume.',
-      presets: ['drill', 'advise', 'roleplay', 'chat'],
-      realm: 'seduction', // ADDED
-      imagePath: 'assets/images/mentors/monroe.png', // ADDED
-      longDescription: 'Hollywood icon whose blend of vulnerability and sensuality captivated millions. Her charm was strategic, her softness deliberate.', // ADDED
-    ),
+    MentorConstants.getMentorById('casanova')!,
+    MentorConstants.getMentorById('cleopatra')!,
+    MentorConstants.getMentorById('machiavelli')!,
+    MentorConstants.getMentorById('sun_tzu')!,
+    MentorConstants.getMentorById('marcus_aurelius')!,
+    MentorConstants.getMentorById('churchill')!,
   ];
 
   // Helper to get mentor portrait asset path

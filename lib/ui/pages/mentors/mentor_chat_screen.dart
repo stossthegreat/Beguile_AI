@@ -90,12 +90,12 @@ class _MentorChatScreenState extends ConsumerState<MentorChatScreen> {
         elevation: 0,
         title: Row(
           children: [
-            // Mentor avatar
+            // Mentor avatar (square)
             Container(
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                shape: BoxShape.circle,
+                borderRadius: BorderRadius.circular(8),
                 gradient: LinearGradient(
                   colors: [
                     _parseColor(widget.mentor.color[0]),
@@ -103,7 +103,8 @@ class _MentorChatScreenState extends ConsumerState<MentorChatScreen> {
                   ],
                 ),
               ),
-              child: ClipOval(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
                 child: Image.asset(
                   widget.mentor.imagePath,
                   fit: BoxFit.cover,

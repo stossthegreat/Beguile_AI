@@ -230,12 +230,12 @@ class _AnimatedMentorCardState extends State<AnimatedMentorCard>
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Circular portrait on left
+                    // Square portrait on left
                     Container(
                       width: 80,
                       height: 80,
                       decoration: BoxDecoration(
-                        shape: BoxShape.circle,
+                        borderRadius: BorderRadius.circular(12),
                         gradient: LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -253,7 +253,8 @@ class _AnimatedMentorCardState extends State<AnimatedMentorCard>
                           ),
                         ],
                       ),
-                      child: ClipOval(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
                         child: Image.asset(
                           widget.mentor.imagePath,
                           fit: BoxFit.cover,
