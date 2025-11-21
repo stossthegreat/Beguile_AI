@@ -32,7 +32,7 @@ class _ScanPageState extends ConsumerState<ScanPage> {
     MentorConstants.getMentorById('machiavelli')!,
     MentorConstants.getMentorById('sun_tzu')!,
     MentorConstants.getMentorById('marcus_aurelius')!,
-    MentorConstants.getMentorById('churchill')!,
+    MentorConstants.getMentorById('monroe')!,
   ];
 
   // Helper to get mentor portrait asset path
