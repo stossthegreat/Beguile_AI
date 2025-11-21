@@ -64,16 +64,29 @@ class MentorListScreen extends StatelessWidget {
                 ),
                 child: SafeArea(
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 60, 24, 24),
+                    padding: const EdgeInsets.fromLTRB(24, 80, 24, 60),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
+                        // Big title
+                        Text(
+                          realm.name,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        // Subtitle below
                         Text(
                           realm.subtitle,
                           style: TextStyle(
                             color: Colors.white.withOpacity(0.9),
                             fontSize: 16,
+                            fontWeight: FontWeight.w400,
                           ),
                         ),
                       ],

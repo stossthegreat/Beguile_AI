@@ -243,24 +243,90 @@ class _MentorChatScreenState extends ConsumerState<MentorChatScreen> {
 
                 return Align(
                   alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
-                  child: Container(
-                    margin: const EdgeInsets.only(bottom: 12),
-                    padding: const EdgeInsets.all(16),
-                    constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width * 0.75,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isUser
-                          ? _parseColor(widget.mentor.color[0])
-                          : WFColors.cardDark,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Text(
-                      message.text,
-                      style: TextStyle(
-                        color: isUser ? Colors.white : WFColors.textPrimary,
-                        fontSize: 15,
-                        height: 1.4,
+                  child: GestureDetector(
+                    onLongPress: () {
+                      // Copy message on long press
+                      Clipboard.setData(ClipboardData(text: message.text));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: const Text('Message copied to clipboard'),
+                          duration: const Duration(seconds: 2),
+                          backgroundColor: _parseColor(widget.mentor.color[0]),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: 12),
+                      padding: const EdgeInsets.all(16),
+                      constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width * 0.75,
+                      ),
+                      decoration: BoxDecoration(
+                        color: isUser
+                            ? _parseColor(widget.mentor.color[0])
+                            : WFColors.cardDark,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Selectable text so user can highlight and copy
+                          SelectableText(
+                            message.text,
+                            style: TextStyle(
+                              color: isUser ? Colors.white : WFColors.textPrimary,
+                              fontSize: 15,
+                              height: 1.4,
+                            ),
+                          ),
+                          // Copy icon for mentor messages
+                          if (!isUser) ...[
+                            const SizedBox(height: 8),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    Clipboard.setData(ClipboardData(text: message.text));
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: const Text('Message copied to clipboard'),
+                                        duration: const Duration(seconds: 2),
+                                        backgroundColor: _parseColor(widget.mentor.color[0]),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.all(6),
+                                    decoration: BoxDecoration(
+                                      color: WFColors.base.withOpacity(0.5),
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          Icons.copy,
+                                          size: 14,
+                                          color: WFColors.textSecondary,
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          'Copy',
+                                          style: TextStyle(
+                                            color: WFColors.textSecondary,
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ],
                       ),
                     ),
                   ),
