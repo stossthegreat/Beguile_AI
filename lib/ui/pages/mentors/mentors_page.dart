@@ -6,16 +6,29 @@ import '../../../data/models/mentor_models.dart';
 import '../../../core/theme/theme.dart';
 import '../../atoms/glass_card.dart';
 import 'mentor_detail_page.dart';
+import 'realm_list_screen.dart'; // NEW: Import realm list screen
 import '../../../widgets/tab_header.dart';
 
-class MentorsPage extends ConsumerStatefulWidget {
+class MentorsPage extends ConsumerWidget {
   const MentorsPage({super.key});
 
   @override
-  ConsumerState<MentorsPage> createState() => _MentorsPageState();
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Simply show the RealmListScreen as the mentors tab entry point
+    return const RealmListScreen();
+  }
 }
 
-class _MentorsPageState extends ConsumerState<MentorsPage> {
+// Keep old implementation commented for reference/backwards compatibility
+/*
+class _MentorsPageOld extends ConsumerStatefulWidget {
+  const _MentorsPageOld({super.key});
+
+  @override
+  ConsumerState<_MentorsPageOld> createState() => _MentorsPageState();
+}
+
+class _MentorsPageState extends ConsumerState<_MentorsPageOld> {
   bool _isLoading = true;
 
   @override
@@ -50,7 +63,9 @@ class _MentorsPageState extends ConsumerState<MentorsPage> {
     );
   }
 }
+*/
 
+/*
 class _MentorsContent extends ConsumerWidget {
   const _MentorsContent();
 
@@ -394,3 +409,4 @@ class _LoadingShell extends StatelessWidget {
     );
   }
 }
+*/

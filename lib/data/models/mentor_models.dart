@@ -90,7 +90,27 @@ class MentorTokens extends Equatable {
   List<Object?> get props => [prompt, completion];
 }
 
-// Mentor definitions (fixed 6 mentors)
+// Realm definitions for mentor universe
+class MentorRealm extends Equatable {
+  final String id;
+  final String name;
+  final String subtitle;
+  final List<String> gradient; // Gradient colors for realm card
+  final String icon; // Emoji icon for realm
+
+  const MentorRealm({
+    required this.id,
+    required this.name,
+    required this.subtitle,
+    required this.gradient,
+    required this.icon,
+  });
+
+  @override
+  List<Object?> get props => [id, name, subtitle, gradient, icon];
+}
+
+// Mentor definitions (now 80 mentors across 12 realms)
 class Mentor extends Equatable {
   final String id;
   final String name;
@@ -100,6 +120,9 @@ class Mentor extends Equatable {
   final List<String> color; // Gradient colors
   final String greeting;
   final List<String> presets; // Always: ["drill", "advise", "roleplay", "chat"]
+  final String realm; // Which realm this mentor belongs to
+  final String imagePath; // Path to mentor portrait asset
+  final String longDescription; // 2-3 line description for mentor card
 
   const Mentor({
     required this.id,
@@ -110,9 +133,23 @@ class Mentor extends Equatable {
     required this.color,
     required this.greeting,
     required this.presets,
+    required this.realm,
+    required this.imagePath,
+    required this.longDescription,
   });
 
   @override
-  List<Object?> get props =>
-      [id, name, subtitle, avatar, description, color, greeting, presets];
+  List<Object?> get props => [
+        id,
+        name,
+        subtitle,
+        avatar,
+        description,
+        color,
+        greeting,
+        presets,
+        realm,
+        imagePath,
+        longDescription
+      ];
 }
