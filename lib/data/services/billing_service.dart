@@ -54,42 +54,74 @@ class BillingService {
 
     if (productIds.isEmpty) return {};
 
+    print('🔍 Querying products: $productIds');
     final response = await _inAppPurchase.queryProductDetails(productIds);
-    if (response.error != null || response.productDetails.isEmpty) {
-      print('⚠️ Billing load error: ${response.error}');
+    
+    if (response.error != null) {
+      print('❌ Billing load error: ${response.error}');
       return {};
+    }
+    
+    if (response.productDetails.isEmpty) {
+      print('⚠️ No products found for IDs: $productIds');
+      return {};
+    }
+
+    print('✅ Found ${response.productDetails.length} products');
+    for (final p in response.productDetails) {
+      print('  Product: ${p.id} - ${p.title} - ${p.price}');
     }
 
     final byId = {for (final p in response.productDetails) p.id: p};
     final Map<String, ProductDetails> plans = {};
+    
     if (byId.containsKey(androidMonthlyId)) {
       plans['monthly'] = byId[androidMonthlyId]!;
+      print('✅ Monthly product loaded: $androidMonthlyId');
+    } else {
+      print('❌ Monthly product NOT found: $androidMonthlyId');
     }
+    
     if (byId.containsKey(androidYearlyId)) {
       plans['yearly'] = byId[androidYearlyId]!;
+      print('✅ Yearly product loaded: $androidYearlyId');
+    } else {
+      print('❌ Yearly product NOT found: $androidYearlyId');
     }
+    
     return plans;
   }
 
   static Future<bool> buyPlan(String plan) async {
     final products = await loadProductsByPlan();
     final product = products[plan];
-    if (product == null) return false;
+    if (product == null) {
+      print('❌ No product found for plan: $plan');
+      return false;
+    }
 
     _pendingPurchaseCompleter = Completer<bool>();
 
     if (Platform.isAndroid && product is GooglePlayProductDetails) {
+      print('🔍 Processing Android purchase for: $plan');
       final offers = product.productDetails.subscriptionOfferDetails;
       dynamic selectedOffer;
       if (offers != null && offers.isNotEmpty) {
+        print('🔍 Searching offers for plan: $plan');
+        print('📊 Available offers: ${offers.length}');
+        
         for (final o in offers) {
           final base = (o.basePlanId ?? '').toLowerCase();
           final tags =
               (o.offerTags ?? []).map((t) => t.toLowerCase()).toList();
+          
+          print('  Offer: basePlanId=$base, tags=$tags');
+          
           if (plan == 'monthly' &&
               (base.contains('month') ||
                   tags.any((t) => t.contains('month')))) {
             selectedOffer = o;
+            print('✅ Selected monthly offer: $base');
             break;
           }
           if ((plan == 'yearly' || plan == 'annual') &&
@@ -97,10 +129,16 @@ class BillingService {
                   base.contains('annual') ||
                   tags.any((t) => t.contains('year') || t.contains('annual')))) {
             selectedOffer = o;
+            print('✅ Selected yearly offer: $base');
             break;
           }
         }
-        selectedOffer ??= offers.first;
+        
+        // Fallback: Use first offer if no match found
+        if (selectedOffer == null) {
+          selectedOffer = offers.first;
+          print('⚠️ No matching offer found for $plan, using first offer: ${offers.first.basePlanId}');
+        }
       }
 
       final offerToken = selectedOffer?.offerIdToken ?? product.offerToken;

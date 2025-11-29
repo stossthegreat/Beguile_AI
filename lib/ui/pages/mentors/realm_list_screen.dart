@@ -160,6 +160,51 @@ class _AnimatedRealmCardState extends State<AnimatedRealmCard>
     return Color(int.parse('FF$hex', radix: 16));
   }
 
+  Widget _buildMentorPreviews(BuildContext context) {
+    final mentorsInRealm = MentorConstants.getMentorsByRealm(widget.realm.id);
+    final previewMentors = mentorsInRealm.take(5).toList();
+    
+    if (previewMentors.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    
+    return Row(
+      children: previewMentors.map((mentor) {
+        return Container(
+          margin: const EdgeInsets.only(right: 6),
+          width: 36,
+          height: 36,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: Colors.white.withOpacity(0.3),
+              width: 1.5,
+            ),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(7),
+            child: Image.asset(
+              mentor.imagePath,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                // Fallback to emoji
+                return Container(
+                  color: Colors.white.withOpacity(0.1),
+                  child: Center(
+                    child: Text(
+                      mentor.avatar,
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return FadeTransition(
@@ -221,39 +266,48 @@ class _AnimatedRealmCardState extends State<AnimatedRealmCard>
                     
                     // Content
                     Padding(
-                      padding: const EdgeInsets.all(24),
+                      padding: const EdgeInsets.all(20),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          // Icon
-                          Text(
-                            widget.realm.icon,
-                            style: const TextStyle(fontSize: 48),
+                          // Top section: Icon, Title, Subtitle
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Icon
+                              Text(
+                                widget.realm.icon,
+                                style: const TextStyle(fontSize: 40),
+                              ),
+                              const SizedBox(height: 10),
+                              
+                              // Title
+                              Text(
+                                widget.realm.name,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              
+                              // Subtitle
+                              Text(
+                                widget.realm.subtitle,
+                                style: TextStyle(
+                                  color: Colors.white.withOpacity(0.85),
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 12),
                           
-                          // Title
-                          Text(
-                            widget.realm.name,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 26,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          
-                          // Subtitle
-                          Text(
-                            widget.realm.subtitle,
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.9),
-                              fontSize: 15,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
+                          // Bottom section: Mentor preview images
+                          _buildMentorPreviews(context),
                         ],
                       ),
                     ),
