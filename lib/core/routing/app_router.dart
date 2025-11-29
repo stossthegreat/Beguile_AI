@@ -19,7 +19,7 @@ import '../../ui/shared/loading_shell.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: '/', // Start at root, let redirect logic handle routing
+    initialLocation: '/onboarding', // New users start at onboarding
     redirect: (context, state) {
       final container = ProviderScope.containerOf(context);
       final authState = container.read(authStateProvider);
@@ -31,9 +31,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       final isOnRootOrHome = location == '/' || location == '/home';
       final isOnPaywall = location == '/paywall';
 
-      // During auth loading, stay put - don't redirect to onboarding
+      // During auth loading - if onboarding complete, don't show it
       if (authState == AuthState.loading) {
-        // Show loading screen, don't redirect
+        if (isOnOnboarding && OnboardingService.isCompleted) {
+          return null; // Stay on current route, don't redirect
+        }
         return null;
       }
 
@@ -58,18 +60,11 @@ return '/mentors';
       return null;
     },
     routes: [
-      // Root alias - shows loading while auth resolves
+      // Root alias (prevents 404 on initial load when state is still resolving)
       GoRoute(
         path: '/',
         name: 'root',
-        builder: (context, state) => const Scaffold(
-          backgroundColor: Color(0xFF0B0B0B),
-          body: Center(
-            child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF34D399)),
-            ),
-          ),
-        ),
+        builder: (context, state) => const LoadingShell(message: 'Initializing Beguile AI...'),
       ),
       // Alias: /home (no UI, just a path that gets redirected in redirect())
       GoRoute(
