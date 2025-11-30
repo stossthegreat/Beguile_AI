@@ -474,5 +474,5 @@ class _MentorverseIntroState extends State<MentorverseIntro>
       },
     );
   }
-
+}
 
