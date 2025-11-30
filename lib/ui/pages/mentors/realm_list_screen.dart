@@ -168,17 +168,19 @@ class _AnimatedRealmCardState extends State<AnimatedRealmCard>
       return const SizedBox.shrink();
     }
     
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        ...previewMentors.asMap().entries.map((entry) {
-          final index = entry.key;
-          final mentor = entry.value;
-          
-          return Container(
-            margin: EdgeInsets.only(right: index < 3 ? 12 : 0), // 12px spacing between, none after last
-            width: 70,
-            height: 70,
+    return Padding(
+      padding: const EdgeInsets.only(left: 0), // Align to left edge of card padding
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          ...previewMentors.asMap().entries.map((entry) {
+            final index = entry.key;
+            final mentor = entry.value;
+            
+            return Container(
+              margin: EdgeInsets.only(right: index < 3 ? 14 : 0), // 14px spacing, cleaner gaps
+              width: 80, // Same as mentor list cards (was 70)
+              height: 80,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
@@ -210,10 +212,10 @@ class _AnimatedRealmCardState extends State<AnimatedRealmCard>
                       ),
                     ),
                     child: Center(
-                      child: Text(
-                        mentor.avatar,
-                        style: const TextStyle(fontSize: 32),
-                      ),
+                    child: Text(
+                      mentor.avatar,
+                      style: const TextStyle(fontSize: 36), // Bigger emoji for 80x80
+                    ),
                     ),
                   );
                 },
@@ -243,7 +245,7 @@ class _AnimatedRealmCardState extends State<AnimatedRealmCard>
               duration: const Duration(milliseconds: 150),
               curve: Curves.easeOut,
               child: Container(
-                height: 180,
+                height: 200, // Increased height to fit bigger mentor squares
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   gradient: LinearGradient(
