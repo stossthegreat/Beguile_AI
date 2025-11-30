@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/theme.dart';
 import '../../../data/services/constants.dart';
+import '../../../data/models/mentor_models.dart';
 
 /// Epic Mentorverse introduction - shows all 79 mentors in cinematic sequence
 class MentorverseIntro extends StatefulWidget {
