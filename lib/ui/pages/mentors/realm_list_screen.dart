@@ -168,62 +168,58 @@ class _AnimatedRealmCardState extends State<AnimatedRealmCard>
       return const SizedBox.shrink();
     }
     
-    return Padding(
-      padding: const EdgeInsets.only(left: 0), // Align to left edge of card padding
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          ...previewMentors.asMap().entries.map((entry) {
-            final index = entry.key;
-            final mentor = entry.value;
-            
-            return Container(
-              margin: EdgeInsets.only(right: index < 3 ? 14 : 0), // 14px spacing, cleaner gaps
-              width: 80, // Same as mentor list cards (was 70)
-              height: 80,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.4),
-                width: 2,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
-                  blurRadius: 8,
-                  offset: const Offset(0, 3),
-                ),
-              ],
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: previewMentors.asMap().entries.map((entry) {
+        final index = entry.key;
+        final mentor = entry.value;
+        
+        return Container(
+          margin: EdgeInsets.only(right: index < 3 ? 14 : 0), // 14px spacing, cleaner gaps
+          width: 80, // Same as mentor list cards
+          height: 80,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: Colors.white.withOpacity(0.4),
+              width: 2,
             ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.asset(
-                mentor.imagePath,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  // Fallback to gradient with emoji
-                  return Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.white.withOpacity(0.2),
-                          Colors.white.withOpacity(0.05),
-                        ],
-                      ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 8,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.asset(
+              mentor.imagePath,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                // Fallback to gradient with emoji
+                return Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.white.withOpacity(0.2),
+                        Colors.white.withOpacity(0.05),
+                      ],
                     ),
-                    child: Center(
+                  ),
+                  child: Center(
                     child: Text(
                       mentor.avatar,
                       style: const TextStyle(fontSize: 36), // Bigger emoji for 80x80
                     ),
-                    ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
-          );
-        }).toList(),
-      ],
+          ),
+        );
+      }).toList(),
     );
   }
 
