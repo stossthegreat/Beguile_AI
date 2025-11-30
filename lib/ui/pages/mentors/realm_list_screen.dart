@@ -169,53 +169,59 @@ class _AnimatedRealmCardState extends State<AnimatedRealmCard>
     }
     
     return Row(
-      children: previewMentors.map((mentor) {
-        return Container(
-          margin: const EdgeInsets.only(right: 10),
-          width: 70, // Same size as mentor list cards
-          height: 70,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: Colors.white.withOpacity(0.4),
-              width: 2,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.3),
-                blurRadius: 8,
-                offset: const Offset(0, 3),
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        ...previewMentors.asMap().entries.map((entry) {
+          final index = entry.key;
+          final mentor = entry.value;
+          
+          return Container(
+            margin: EdgeInsets.only(right: index < 3 ? 12 : 0), // 12px spacing between, none after last
+            width: 70,
+            height: 70,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.4),
+                width: 2,
               ),
-            ],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Image.asset(
-              mentor.imagePath,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                // Fallback to gradient with emoji
-                return Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.white.withOpacity(0.2),
-                        Colors.white.withOpacity(0.05),
-                      ],
-                    ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      mentor.avatar,
-                      style: const TextStyle(fontSize: 32),
-                    ),
-                  ),
-                );
-              },
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
+                ),
+              ],
             ),
-          ),
-        );
-      }).toList(),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.asset(
+                mentor.imagePath,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  // Fallback to gradient with emoji
+                  return Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.white.withOpacity(0.2),
+                          Colors.white.withOpacity(0.05),
+                        ],
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        mentor.avatar,
+                        style: const TextStyle(fontSize: 32),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          );
+        }).toList(),
+      ],
     );
   }
 
