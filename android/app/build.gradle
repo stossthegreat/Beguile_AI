@@ -13,8 +13,8 @@ android {
         applicationId "com.beguileai.app"  // MUST match Play package exactly
         minSdk 24                          // Required by Play Billing v6+
         targetSdk 36
-        versionCode 19                   // 🔼 Bumped for new Play upload
-        versionName "2.0.0"                // 🔼 Visible app version
+        versionCode 20                   // 🔼 Bumped for new Play upload
+        versionName "2.0.1"                // 🔼 Visible app version
         // Required for Play Billing Library v6+
         resValue "string", "play_billing_provider_authority", "com.android.vending"
     }
