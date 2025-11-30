@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/theme.dart';
+import '../../../data/services/constants.dart';
+import 'mentorverse_intro.dart';
 
 /* ─────────────────────── SLIDE DATA ─────────────────────── */
 class OnboardingSlide {
@@ -164,15 +166,24 @@ class _BeguileOnboardingState extends ConsumerState<BeguileOnboarding>
     }
   }
 
+  bool _showMentorverseIntro = false;
+  
   void _onLastSlideContinue() {
     setState(() => _isExploding = true);
     Future.delayed(const Duration(milliseconds: 3500), () {
       if (mounted) {
         setState(() {
           _isExploding = false;
-          _showCouncilReveal = true;
+          _showMentorverseIntro = true; // Show Mentorverse intro first
         });
       }
+    });
+  }
+  
+  void _onMentorverseComplete() {
+    setState(() {
+      _showMentorverseIntro = false;
+      _showCouncilReveal = true; // Then show council reveal
     });
   }
 
@@ -184,9 +195,13 @@ class _BeguileOnboardingState extends ConsumerState<BeguileOnboarding>
         child: Stack(
           children: [
             // Main onboarding slides
-            if (!_isExploding && !_showCouncilReveal) _buildMainContent(),
+            if (!_isExploding && !_showCouncilReveal && !_showMentorverseIntro) _buildMainContent(),
             // Explode animation
             if (_isExploding) _buildExplodeOverlay(),
+            // Mentorverse intro (NEW - plays after explosion, before council)
+            if (_showMentorverseIntro) MentorverseIntro(
+              onComplete: _onMentorverseComplete,
+            ),
             // Council reveal sequence
             if (_showCouncilReveal) _CouncilRevealSequence(
               onComplete: widget.onFinish,
