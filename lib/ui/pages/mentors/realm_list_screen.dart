@@ -162,7 +162,7 @@ class _AnimatedRealmCardState extends State<AnimatedRealmCard>
 
   Widget _buildMentorPreviews(BuildContext context) {
     final mentorsInRealm = MentorConstants.getMentorsByRealm(widget.realm.id);
-    final previewMentors = mentorsInRealm.take(5).toList();
+    final previewMentors = mentorsInRealm.take(4).toList(); // Show 4 mentors
     
     if (previewMentors.isEmpty) {
       return const SizedBox.shrink();
@@ -171,29 +171,43 @@ class _AnimatedRealmCardState extends State<AnimatedRealmCard>
     return Row(
       children: previewMentors.map((mentor) {
         return Container(
-          margin: const EdgeInsets.only(right: 6),
-          width: 36,
-          height: 36,
+          margin: const EdgeInsets.only(right: 10),
+          width: 70, // Same size as mentor list cards
+          height: 70,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: Colors.white.withOpacity(0.3),
-              width: 1.5,
+              color: Colors.white.withOpacity(0.4),
+              width: 2,
             ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 8,
+                offset: const Offset(0, 3),
+              ),
+            ],
           ),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(7),
+            borderRadius: BorderRadius.circular(10),
             child: Image.asset(
               mentor.imagePath,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
-                // Fallback to emoji
+                // Fallback to gradient with emoji
                 return Container(
-                  color: Colors.white.withOpacity(0.1),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.white.withOpacity(0.2),
+                        Colors.white.withOpacity(0.05),
+                      ],
+                    ),
+                  ),
                   child: Center(
                     child: Text(
                       mentor.avatar,
-                      style: const TextStyle(fontSize: 18),
+                      style: const TextStyle(fontSize: 32),
                     ),
                   ),
                 );
@@ -271,17 +285,15 @@ class _AnimatedRealmCardState extends State<AnimatedRealmCard>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          // Top section: Icon, Title, Subtitle
+                          // Top section: Mentor preview images (BIG squares)
+                          _buildMentorPreviews(context),
+                          
+                          const SizedBox(height: 16),
+                          
+                          // Bottom section: Title and Subtitle only (NO icon)
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Icon
-                              Text(
-                                widget.realm.icon,
-                                style: const TextStyle(fontSize: 40),
-                              ),
-                              const SizedBox(height: 10),
-                              
                               // Title
                               Text(
                                 widget.realm.name,
@@ -305,9 +317,6 @@ class _AnimatedRealmCardState extends State<AnimatedRealmCard>
                               ),
                             ],
                           ),
-                          
-                          // Bottom section: Mentor preview images
-                          _buildMentorPreviews(context),
                         ],
                       ),
                     ),
