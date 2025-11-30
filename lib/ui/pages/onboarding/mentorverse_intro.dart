@@ -249,9 +249,10 @@ class _MentorverseIntroState extends State<MentorverseIntro>
                   ),
                   const SizedBox(height: 40),
                   
-                  // Name (huge, bold)
+                  // Name (huge, bold, CENTERED)
                   Text(
                     mentor.name.toUpperCase(),
+                    textAlign: TextAlign.center,
                     style: GoogleFonts.spaceGrotesk(
                       fontSize: 36,
                       fontWeight: FontWeight.w900,
@@ -314,9 +315,10 @@ class _MentorverseIntroState extends State<MentorverseIntro>
                   ),
                   const SizedBox(height: 24),
                   
-                  // Realm name
+                  // Realm name (CENTERED)
                   Text(
                     realm.name.toUpperCase(),
+                    textAlign: TextAlign.center,
                     style: GoogleFonts.spaceGrotesk(
                       fontSize: 32,
                       fontWeight: FontWeight.w900,

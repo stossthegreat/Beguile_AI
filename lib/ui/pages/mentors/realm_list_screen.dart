@@ -162,20 +162,22 @@ class _AnimatedRealmCardState extends State<AnimatedRealmCard>
 
   Widget _buildMentorPreviews(BuildContext context) {
     final mentorsInRealm = MentorConstants.getMentorsByRealm(widget.realm.id);
-    final previewMentors = mentorsInRealm.take(4).toList(); // Show 4 mentors
+    final previewMentors = mentorsInRealm.take(3).toList(); // Show 3 mentors (not 4)
     
     if (previewMentors.isEmpty) {
       return const SizedBox.shrink();
     }
     
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: previewMentors.asMap().entries.map((entry) {
-        final index = entry.key;
-        final mentor = entry.value;
-        
-        return Container(
-          margin: EdgeInsets.only(right: index < 3 ? 14 : 0), // 14px spacing, cleaner gaps
+    return Padding(
+      padding: const EdgeInsets.only(left: 8), // SLIGHTLY move to left (8px from edge)
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: previewMentors.asMap().entries.map((entry) {
+          final index = entry.key;
+          final mentor = entry.value;
+          
+          return Container(
+            margin: EdgeInsets.only(right: index < 2 ? 12 : 0), // 12px spacing between 3 squares
           width: 80, // Same as mentor list cards
           height: 80,
           decoration: BoxDecoration(
