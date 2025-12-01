@@ -222,6 +222,7 @@ class _AnimatedRealmCardState extends State<AnimatedRealmCard>
           ),
         );
       }).toList(),
+      ),
     );
   }
 
